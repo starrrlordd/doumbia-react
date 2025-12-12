@@ -1,0 +1,191 @@
+.heroVideo {
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.heroOverlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  background-color: rgb(0, 0, 0, 0.4);
+}
+
+.hero {
+  height: 100vh;
+  position: relative;
+}
+
+.heroContent {
+  position: relative;
+  top: 50%;
+  text-align: center;
+  z-index: 4;
+  color: var(--bg-color);
+  font-size: 2.8rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.bannerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.banner {
+  flex: 1 1 calc(50% - 1rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.banner img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.banner a {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.banner a h4 {
+  position: absolute;
+  bottom: 15px;
+  left: 30px;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--bg-color);
+}
+
+.lbContainer {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.lbContainer a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.lbContent {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 61px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lbContent img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.lbOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.lbText {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.lbText h1 {
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.seoBannerContainer h4 {
+  margin: 30px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.seoBannerContainer ul {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 30px;
+}
+
+.seoBannerContainer ul li {
+  text-transform: uppercase;
+}
+
+@media (min-width: 480px) and (max-width: 768px) {
+  .banner {
+    flex: 1 1 calc(50% - 0.5rem);
+  }
+
+  .lbContent {
+    height: 60vh;
+  }
+
+  .lbText h1 {
+    font-size: 2rem;
+  }
+
+  .seeAll {
+    display: none;
+  }
+}
+
+@media (min-width: 0px) and (max-width: 480px) {
+  .banner {
+    flex: 1 1 100%;
+  }
+
+  .lbContent {
+    height: 50vh;
+  }
+
+  .lbText h1 {
+    font-size: 1.5rem;
+  }
+
+  .seoBannerContainer h4 {
+    padding: 20px 10px;
+    margin: 0;
+  }
+
+  .seoBannerContainer ul {
+    padding: 20px 10px;
+    gap: 20px;
+    overflow: scroll;
+    text-wrap: nowrap;
+  }
+
+  .seeAll {
+    display: none;
+  }
+}
+
+

@@ -1,0 +1,30 @@
+.admin {
+    margin-top: 70px;
+}
+
+.admin h1 {
+    margin: 30px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    margin: 0 220px;
+}
+
+.form label {
+    margin: 10px 0;
+}
+
+.form input, select {
+    padding: 8px;
+    font-size: 15px;
+}
+
+.form button {
+    margin: 15px 200px;
+    cursor: pointer;
+    
+    padding: 15px;
+    border: none;
+}

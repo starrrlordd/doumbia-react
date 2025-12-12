@@ -1,0 +1,18 @@
+.doubleRectangle {
+    display: flex;
+    background: transparent;
+    border: none;
+}
+
+.leftSide {
+      width: 10px;
+    height: 20px;
+    border: 1px solid black;
+    border-right: none;
+}
+
+.oneSide {
+    width: 10px;
+    height: 20px;
+    border: 1px solid black;
+}

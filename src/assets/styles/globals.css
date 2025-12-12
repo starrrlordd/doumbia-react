@@ -1,0 +1,33 @@
+@import "./variables.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 13px;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+
+ul {
+    list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-color)
+}
+
+h3 {
+  font-size: var(--header-text);
+}

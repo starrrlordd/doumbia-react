@@ -1,0 +1,51 @@
+.filterBar {
+  text-transform: uppercase;
+  padding: 10px 30px;
+}
+
+.filterBar h4 {
+  margin-bottom: 20px;
+}
+
+.fo {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
+.filter {
+  display: flex;
+  justify-content: left;
+  gap: 30px;
+  white-space: nowrap;
+  margin-bottom: 20px;
+}
+
+.filter li {
+  cursor: pointer;
+}
+
+@media (min-width: 0) and (max-width: 480px) {
+  .filterBar {
+    padding: 65px 10px 0;
+  }
+
+  .filter {
+    flex-wrap: wrap;
+    justify-content: left;
+    gap: 15px;
+  }
+
+  .filterGrid {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+}
+
+/* @media (min-width: 768px) and (max-width: 1024px) {
+  .filterBar {
+    margin-top: 60px;
+  }
+} */

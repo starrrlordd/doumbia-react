@@ -1,0 +1,26 @@
+.total {
+  display: flex;
+  justify-content: right;
+  padding: 20px 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.actionButton {
+  text-transform: uppercase;
+}
+
+@media (min-width: 0) and (max-width: 480px) {
+  .actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .actionButton {
+    padding: 10px;
+    text-transform: uppercase;
+  }
+}

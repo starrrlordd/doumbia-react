@@ -1,0 +1,56 @@
+.newsletterContainerParent {
+  padding: 60px 0;
+}
+
+.newsletter-container {
+  text-align: center;
+}
+
+.newsletter-container h4 {
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.newsletter-form {
+  padding: 10px;
+}
+
+.newsletter-button {
+  width: 90px;
+  height: 40px;
+  background: transparent;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+}
+
+.newsletter-container p {
+  font-size: 13px;
+  font-weight: 300;
+}
+
+@media (min-width: 0) and (max-width: 480px) {
+    .newsletter-container {
+    text-align: left;
+  }
+
+  .newsletter-container h4 {
+    padding: 0 10px;
+  }
+
+  .newsletter-container .subscribing {
+    padding: 0 10px;
+  }
+
+  .newsletter-container span {
+    font-weight: 600;
+  }
+
+  .newsletter-form input {
+    width: 100%;
+  }
+
+  .newsletter-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,38 @@
+.fourSquare {
+    display: flex;
+    height: 20px;
+    background: transparent;
+    border: none;
+}
+
+.topSide {
+        width: 10x;
+    height: 10px ;
+    border: 1px solid black;
+    border-bottom: none;
+}
+
+.oneSide {
+    width: 10px;
+    height: 10px ;
+    border: 1px solid black;
+}
+
+.topRightSide {
+           width: 10px;
+    height: 10px ;
+    border: 1px solid black;
+    border-bottom: none;
+    border-left: none;
+}
+
+.bottomRightSide {
+        width: 10px;
+    height: 10px ;
+    border: 1px solid black;
+    border-left: none;
+}
+/* 
+.leftSide, .rightSide {
+    height: 20px;
+} */
