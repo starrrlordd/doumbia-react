@@ -8,10 +8,11 @@ import { Link } from "react-router-dom";
 const ProductCard = ({ product, cardBoxType }) => {
   const { addToCart } = useContext(CartContext);
 
-  console.log(cardBoxType);
-
   return (
-    <Link to={`/product/${product.id}`} className={classes.cardLink}>
+    <Link
+      to={`/product/${product.id}`}
+      className={classes.cardLink}
+    >
       <div className={`${classes.card} ${classes[cardBoxType]}`}>
         <img src={product.image} alt={product.name} className={classes.image} />
         {cardBoxType !== "card3" && (
@@ -22,6 +23,7 @@ const ProductCard = ({ product, cardBoxType }) => {
                 className={classes.addButton}
                 onClick={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
                   addToCart(product);
                 }}
               >
