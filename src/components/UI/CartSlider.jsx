@@ -1,13 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "../../store/cart-context";
 
 import BlackButton from "./BlackButton";
 
 import classes from "./CartSlider.module.css";
+import WhiteButton from "./WhiteButton";
+import { NavLink } from "react-router-dom";
 
 const CartSlider = () => {
-  const { cart, removeItem, total, isCartOpen, closeCart } =
+  const { cart, removeItem, total, isCartOpen, closeCart, setIsCartOpen } =
     useContext(CartContext);
+
+    useEffect(() => {
+      setIsCartOpen(false)
+    }, [])
 
   return (
     <>
@@ -48,6 +54,9 @@ const CartSlider = () => {
               ))}
             </ul>
             <h4>Total: ¢{total}</h4>
+            <NavLink className={classes.viewCart} to="/Cart" >
+              <WhiteButton className={classes.viewCartButton}>View cart</WhiteButton>
+            </NavLink>
           </>
         )}
       </div>
