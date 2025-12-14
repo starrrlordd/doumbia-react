@@ -9,8 +9,11 @@ import cartIcon from "../../assets/images/icons/cart.svg";
 import profileIcon from "../../assets/images/icons/profile.svg";
 import contactIcon from "../../assets/images/icons/contact.svg";
 import hamburgerIcon from "../../assets/images/icons/hamburger.svg";
+import { WindowSizeContext } from "../../store/windowSize-context";
 
 const Header = () => {
+  const { isMobileSize } = useContext(WindowSizeContext);
+
   const { cart, openCart } = useContext(CartContext);
 
   const cartLength = cart.length;
@@ -21,9 +24,15 @@ const Header = () => {
     setMenuOpen((prev) => !prev);
   };
 
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
   return (
     <header className={classes.header}>
-      <NavLink to="/">Doumbia Online</NavLink>
+      <NavLink to="/" onClick={closeMenu}>
+        Doumbia Online
+      </NavLink>
       <div className={classes.links}>
         <nav className={classes["nav-buttons"]}>
           <NavLink
@@ -90,20 +99,22 @@ const Header = () => {
         </button>
       </div>
 
-      <div className={`${classes.popupMenu} ${menuOpen ? classes.open : ""}`}>
-        <NavLink to="/shop" onClick={toggleMenu}>
-          Shop
-        </NavLink>
-        <NavLink to="/cart" onClick={toggleMenu}>
-          Cart
-        </NavLink>
-        <NavLink to="/login" onClick={toggleMenu}>
-          Profile
-        </NavLink>
-        <NavLink to="/contact" onClick={toggleMenu}>
-          Contact
-        </NavLink>
-      </div>
+      {isMobileSize && (
+        <div className={`${classes.popupMenu} ${menuOpen ? classes.open : ""}`}>
+          <NavLink to="/shop" onClick={toggleMenu}>
+            Shop
+          </NavLink>
+          <NavLink to="/cart" onClick={toggleMenu}>
+            Cart
+          </NavLink>
+          <NavLink to="/login" onClick={toggleMenu}>
+            Profile
+          </NavLink>
+          <NavLink to="/contact" onClick={toggleMenu}>
+            Contact
+          </NavLink>
+        </div>
+      )}
     </header>
   );
 };

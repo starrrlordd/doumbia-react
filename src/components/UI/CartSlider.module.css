@@ -68,3 +68,13 @@
   justify-content: right;
   padding: 10px;
 }
+
+.viewCart {
+  display: flex;
+  justify-content: center;
+}
+
+.viewCartButton {
+  width: 96%;
+  margin: 10px 0;
+}
