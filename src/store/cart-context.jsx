@@ -11,6 +11,7 @@ export const CartContext = createContext({
   isCartOpen: false,
   openCart: () => {},
   closeCart: () => {},
+  setIsCartOpen: () => {},
 });
 
 export default function CartContextProvider({ children }) {
@@ -76,6 +77,7 @@ export default function CartContextProvider({ children }) {
     isCartOpen,
     openCart,
     closeCart,
+    setIsCartOpen,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

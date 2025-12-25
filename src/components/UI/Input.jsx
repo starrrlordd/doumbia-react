@@ -8,6 +8,9 @@ const Input = (props) => {
       type={props.type || "text"}
       placeholder={props.placeholder}
       onChange={props.onChange}
+      name={props.name}
+      required={props.required}
+      
     />
   );
 };

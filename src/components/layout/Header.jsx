@@ -10,8 +10,11 @@ import profileIcon from "../../assets/images/icons/profile.svg";
 import contactIcon from "../../assets/images/icons/contact.svg";
 import hamburgerIcon from "../../assets/images/icons/hamburger.svg";
 import { WindowSizeContext } from "../../store/windowSize-context";
+import { AuthContext } from "../../store/auth-context";
 
 const Header = () => {
+  const { isAuthenticated, user } = useContext(AuthContext);
+
   const { isMobileSize } = useContext(WindowSizeContext);
 
   const { cart, openCart } = useContext(CartContext);
@@ -46,7 +49,7 @@ const Header = () => {
           </NavLink>
           <div className={classes.cartActions}>
             <NavLink
-              to="/Cart"
+              to="/cart"
               className={({ isActive }) =>
                 isActive ? classes.active : undefined
               }
@@ -58,17 +61,31 @@ const Header = () => {
               <p className={classes.bigScreenCart}>({cartLength})</p>
             )}
           </div>
+          {!isAuthenticated && (
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                isActive ? classes.active : undefined
+              }
+            >
+              <img src={profileIcon} alt="login" className={classes.icon} />
+              <span className={classes.text}>Login</span>
+            </NavLink>
+          )}
+          {isAuthenticated && (
+            <NavLink
+              to="/account"
+              className={({ isActive }) =>
+                isActive ? classes.active : undefined
+              }
+            >
+              <img src={profileIcon} alt="profile" className={classes.icon} />
+              <span className={classes.text}>{user?.email.split("@")[0]}</span>
+            </NavLink>
+          )}
+
           <NavLink
-            to="/Login"
-            className={({ isActive }) =>
-              isActive ? classes.active : undefined
-            }
-          >
-            <img src={profileIcon} alt="login" className={classes.icon} />
-            <span className={classes.text}>Login</span>
-          </NavLink>
-          <NavLink
-            to="/Contact"
+            to="/contact"
             className={({ isActive }) =>
               isActive ? classes.active : undefined
             }
@@ -107,9 +124,17 @@ const Header = () => {
           <NavLink to="/cart" onClick={toggleMenu}>
             Cart
           </NavLink>
-          <NavLink to="/login" onClick={toggleMenu}>
-            Profile
-          </NavLink>
+          {!isAuthenticated && (
+            <NavLink to="/login" onClick={toggleMenu}>
+              Profile
+            </NavLink>
+          )}
+          {isAuthenticated && (
+            <NavLink to="/account" onClick={toggleMenu}>
+              {user?.email.split("@")[0]}
+            </NavLink>
+          )}
+
           <NavLink to="/contact" onClick={toggleMenu}>
             Contact
           </NavLink>

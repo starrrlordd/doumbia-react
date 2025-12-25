@@ -1,0 +1,41 @@
+.sidebar {
+  width: 250px;
+  border: 1px solid #eee;
+  background: #fff;
+}
+
+.sidebar a {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar a.active {
+  background: #000;
+  color: #fff;
+}
+
+.logout {
+  padding: 1rem;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+@media (min-width: 0) and (max-width: 468px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    height: 100vh;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+}

@@ -101,7 +101,7 @@
 
 @media (min-width: 0) and (max-width: 480px) {
   .header {
-    padding: 20px 10px;
+    padding: 20px 20px;
     position: fixed;
     width: 100%;
   }

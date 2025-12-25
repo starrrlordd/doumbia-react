@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { CartContext } from "../../store/cart-context";
@@ -7,6 +7,10 @@ import BlackButton from "../UI/BlackButton";
 import CartSlider from "../UI/CartSlider";
 
 const ProductInfoPage = () => {
+  const location = useLocation();
+
+  console.log(location)
+
   const { id } = useParams();
 
   const [product, setProduct] = useState(null);

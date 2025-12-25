@@ -1,0 +1,52 @@
+.wrapper {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+}
+
+.layout {
+  display: flex;
+  gap: 2rem;
+}
+
+.content {
+  flex: 1;
+}
+
+.menuBtn {
+  display: none;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #000;
+  background: none;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 900;
+}
+
+.wrapper h1 {
+    margin: 10px 0;
+}
+
+/* 📱 Mobile styles */
+@media (min-width: 0) and (max-width: 468px) {
+    .wrapper {
+        margin: 40px 0;
+    }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .menuBtn {
+    display: block;
+  }
+
+  .layout {
+    margin: 10px 0;
+  }
+}

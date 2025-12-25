@@ -49,6 +49,8 @@ const Shop = () => {
 
   const [products, setProducts] = useState([]);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [selectedCategory, setSelectedCategory] = useState("Inventory");
 
   const filteredProducts =
@@ -85,6 +87,8 @@ const Shop = () => {
         });
 
         setProducts(loadedProducts);
+
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch products from database : ", error);
       }
@@ -93,6 +97,26 @@ const Shop = () => {
     fetchProducts();
   }, [db]);
   // console.log(products);
+
+  const location = useLocation();
+
+  console.log(location.state);
+
+  useEffect(() => {
+    return () => {
+      sessionStorage.setItem("shopScrollY", window.scrollY.toString());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const savedScrollY = sessionStorage.getItem("shopScrollY");
+
+    requestAnimationFrame(() => {
+      window.scrollTo(0, savedScrollY ? Number(savedScrollY) : 0);
+    });
+  }, [isLoading]);
 
   return (
     <div className={classes.shop}>

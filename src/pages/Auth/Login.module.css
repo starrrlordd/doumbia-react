@@ -33,23 +33,40 @@
   gap: 5px;
 }
 
+.createAccount {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.forgottenPassword {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  text-decoration: underline;
+  font-size: 10px;
+  text-underline-offset: 2px;
+}
+
 @media (min-width: 0) and (max-width: 480px) {
-    .login {
-        padding: 0 20px;
-        width: 100%;
-    }
+  .login {
+    padding: 0 20px;
+    width: 100%;
+  }
 
-    .login h4 {
-      padding-top: 50px;
-    }
+  .login h4 {
+    padding-top: 50px;
+  }
 
-    .inputText {
-      height: 45px;
-      border-radius: 3px;
-      margin: 10px 0;
-    }
+  .inputText {
+    height: 45px;
+    border-radius: 3px;
+    margin: 10px 0;
+  }
 
-    .staySignedIn {
-      margin: 5px;
-    }
+  .staySignedIn {
+    margin: 5px;
+  }
+
+
 }
