@@ -1,0 +1,197 @@
+.checkout {
+  display: flex;
+  justify-content: space-between;
+  width: 900px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.deliveryMethod {
+  width: 341px;
+  padding: 20px;
+}
+
+.navigation {
+  display: flex;
+  margin-bottom: 30px;
+  width: 300px;
+  justify-content: space-between;
+}
+
+.navigation p {
+  list-style-type: none;
+}
+
+.address {
+  text-transform: uppercase;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.method {
+  margin: 10px 0;
+}
+
+.method input {
+  margin: 0 10px;
+}
+
+
+.deliveryDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.deliveryDetails h3 {
+  font-size: 16px;
+  text-transform: uppercase;
+  margin: 10px 0;
+}
+
+.deliveryDetails Input {
+  margin: 10px 0;
+}
+
+.paymentButton {
+  padding: 11px 87px;
+}
+
+.shoppingBag {
+  width: 330px;
+  padding: 20px;
+}
+
+.shoppingBag h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 10px 0;
+}
+
+.promoCode {
+  display: flex;
+}
+
+.promoButton {
+  padding: 5px;
+}
+
+.bagInfo {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-weight: 300;
+}
+
+.bagSummary h2 {
+    margin: 10px 0;
+}
+
+.items {
+    display: flex;
+    margin: 5px 0;
+}
+
+.items img {
+    height: 100px;
+    margin-right: 15px;
+}
+
+.itemsOthers {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.itemsOthers p {
+    font-weight: 300;
+}
+
+@media (min-width: 0) and (max-width: 480px) {
+  .checkout {
+    margin: 60px 20px;
+    flex-direction: column-reverse;
+    width: 91%;
+  }
+
+  .shoppingBag {
+    width: 100%;
+    margin: 20px 0 ;
+  }
+
+  .deliveryMethod {
+    width: 100%;
+  }
+
+  .navigation {
+    width: 100%;
+  }
+
+  .deliveryDetails input {
+    width: 100%;
+  }
+
+  .paymentButton {
+    width: 100%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 820px) {
+  .checkout {
+    flex-direction: column-reverse;
+    margin: 60px 0;
+    width: 100%;
+    align-items: center;
+  }
+
+  .aside {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .shoppingBag {
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  .deliveryMethod {
+    width: 100%;
+  }
+
+  .navigation {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .promoCode {
+    padding: 0 100px;
+    margin: 20px 0;
+  }
+
+  .deliveryDetails {
+    padding: 0 100px;
+  }
+
+  .deliveryDetails input {
+    width: 100%;
+  }
+
+  .paymentButton {
+    width: 100%;
+  }
+}
+
+@media (min-width: 821px) and (max-width: 1024px) {
+  .checkout {
+    padding: 80px 20px;
+  }
+
+  .deliveryMethod {
+    width: 500px;
+  }
+
+  .region {
+    width: 300px;
+  }
+}

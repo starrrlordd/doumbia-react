@@ -96,11 +96,7 @@ const Shop = () => {
 
     fetchProducts();
   }, [db]);
-  // console.log(products);
-
-  const location = useLocation();
-
-  console.log(location.state);
+  // console.log(products);  
 
   useEffect(() => {
     return () => {
