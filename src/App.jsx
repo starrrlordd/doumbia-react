@@ -22,6 +22,8 @@ import PersonalInfo from "./pages/Account/PersonalInfo";
 import Orders from "./pages/Account/Orders";
 import ProtectedRoute from "./pages/Auth/ProtectedRoute";
 import Checkout from "./pages/Checkout";
+import Payment from "./pages/Payment";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
 const App = () => {
   return (
@@ -36,9 +38,13 @@ const App = () => {
 
               <Route path="/Shop" element={<Shop />} />
 
-              <Route path="/Cart" element={<Cart />} />
+              <Route path="/cart" element={<Cart />} />
 
-              <Route path="/Checkout" element={<Checkout />} />
+              <Route path="/checkout" element={<Checkout />} />
+              
+              <Route path="/payment" element={<Payment/>} />
+              
+              <Route path="/orderconfirmation" element={<OrderConfirmation/>} />
 
               <Route path="/Login" element={<Login />} />
 

@@ -7,6 +7,7 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState } from "react";
 import { CartContext } from "../store/cart-context";
 import BlackButton from "../components/UI/BlackButton";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const { cart, total: subtotal } = useContext(CartContext);
@@ -55,6 +56,12 @@ const Checkout = () => {
     console.log(name, surname, email, phone, region, city);
   };
 
+  const navigate = useNavigate();
+
+  const continueToPaymentHandler = () => {
+    navigate("/payment");
+  }
+
   return (
     <div className={classes.checkout}>
       <Card className={classes.deliveryMethod}>
@@ -100,6 +107,7 @@ const Checkout = () => {
               id="name"
               value={name}
               onChange={nameChangeHandler}
+              required
             />
             <Input
               type="text"
@@ -107,6 +115,7 @@ const Checkout = () => {
               id="surname"
               value={surname}
               onChange={surnameChangeHandler}
+              required
             />
             <Input
               type="email"
@@ -114,6 +123,7 @@ const Checkout = () => {
               id="email"
               value={email}
               onChange={emailChangeHandler}
+              required
             />
             <Input
               type="phone"
@@ -121,6 +131,7 @@ const Checkout = () => {
               id="phone"
               value={phone}
               onChange={phoneChangeHandler}
+              required
             />
 
             <select
@@ -128,8 +139,9 @@ const Checkout = () => {
               id="region"
               value={region}
               onChange={regionChangeHandler}
+              required
             >
-              <option value="Select Region" disabled>
+              <option value="Select Region" disabled required>
                 Select Region
               </option>
               <option value="Greater Accra">Greater Accra</option>
@@ -141,10 +153,14 @@ const Checkout = () => {
               id="city"
               value={city}
               onChange={cityChangleHandler}
+              required
             />
           </div>
 
-          <BlackButton className={classes.paymentButton}>
+          <BlackButton
+            className={classes.paymentButton}
+            onClick={continueToPaymentHandler}
+          >
             Continue to Payment
           </BlackButton>
         </form>

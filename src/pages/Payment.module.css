@@ -1,0 +1,71 @@
+.payment {
+  display: flex;
+  justify-content: center;
+  margin: 70px 0;
+}
+
+.paymentCard {
+  padding: 30px;
+}
+
+.navigation {
+  display: flex;
+  margin-bottom: 30px;
+  width: 300px;
+  justify-content: space-between;
+}
+
+.paymentInput {
+  display: flex;
+  margin: 30px 0;
+}
+
+.paymentInput input {
+  margin-right: 20px;
+}
+
+.iconImage {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.iconImage img {
+  width: 60px;
+  height: 35px;
+}
+
+.confirmOrderButton {
+  display: flex;
+  justify-content: space-between;
+}
+
+.confirmOrderButton button {
+    padding: 10px;
+}
+
+@media (min-width: 0) and (max-width: 480px) {
+  .paymentCard {
+    width: 90%;
+  }
+
+  .paymentSoon {
+    padding: 20px 0;
+  }
+
+  .navigation {
+    width: 100%;
+  }
+
+  .iconImage {
+    display: block;
+  }
+
+  .confirmOrderButton {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .confirmOrderButton button {
+    padding: 10px;
+  }
+}

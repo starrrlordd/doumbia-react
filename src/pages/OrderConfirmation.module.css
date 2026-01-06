@@ -1,0 +1,49 @@
+.orderConfirmation {
+    margin: 70px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.confirmationCard{
+    padding: 100px;
+}
+
+.confirmationCard h1 {
+    text-align: center;
+    margin: 20px;
+}
+
+.confirmationCard p {
+    text-align: center;
+    margin: 20px;
+}
+
+.orderNumber p {
+    font-weight: 300;
+}
+
+.buttonWrapper {
+    padding-top: 30px;
+    text-align: center;
+}
+
+.continueShopping {
+    padding: 10px;
+}
+
+@media (min-width: 0) and (max-width: 480px) {
+    .orderConfirmation {
+        margin: 100px 0;
+    }
+    
+    .confirmationCard {
+        padding: 30px;
+        width: 80%;
+    }
+
+    .continueShopping {
+        width: 100%;
+    }
+
+
+}

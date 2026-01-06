@@ -1,6 +1,6 @@
-import React, { useState } from "react";
 import { useContext } from "react";
 import { CartContext } from "../store/cart-context";
+// import { Outlet } from "react-router-dom";
 
 import Card from "../components/UI/Card";
 
@@ -50,6 +50,7 @@ const Cart = () => {
           </WhiteButton>
         </div>
       </div>
+      
     </div>
   );
 };
