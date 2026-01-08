@@ -10,8 +10,6 @@ import CartSlider from "../components/UI/CartSlider";
 
 import classes from "./Shop.module.css";
 
-// import tShirt from "../assets/images/products/tshirts/img7.jpg";
-// import BlackButton from "../components/UI/BlackButton";
 
 const Shop = () => {
   const filterBarItems = [

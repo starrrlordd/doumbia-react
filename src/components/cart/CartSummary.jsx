@@ -4,9 +4,9 @@ import { CartContext } from "../../store/cart-context";
 import classes from "./CartSummary.module.css";
 
 const CartSummary = (className) => {
-  const { cart, total } = useContext(CartContext);
+  const { total } = useContext(CartContext);
 
-  console.log(cart);
+  
 
   return (
     <div className={`${className} ${classes.cartSummary}`}>

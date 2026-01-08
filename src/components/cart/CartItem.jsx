@@ -1,21 +1,16 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import classes from "./CartItem.module.css";
 import BlackButton from "../UI/BlackButton";
 import { CartContext } from "../../store/cart-context";
 import { useContext } from "react";
 
-const CartItem = (cart) => {
-  const { removeItem, increaseCart, decreaseCart } = useContext(CartContext);
+const CartItem = () => {
+  const { cart, removeItem, increaseCart, decreaseCart } = useContext(CartContext);
 
-  const cartItems = cart.cart;
-  // useEffect(() => {
-  //   const total = items.reduce(
-  //     (acc, item) => acc + item.price * item.quantity,
-  //     0
-  //   );
-  //   onTotalChange(total);
-  // }, [items, onTotalChange]);
-  console.log(cart.cart);
+  const cartItems = cart;
+
+  console.log(cartItems);
+  
 
   return (
     <ul className={classes.cartItem}>

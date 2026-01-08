@@ -1,12 +1,21 @@
-import React, { useContext } from "react";
-import classes from "./ProductCard.module.css";
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+
+import { CartContext } from "../../store/cart-context";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { CartContext } from "../../store/cart-context";
-import { Link } from "react-router-dom";
+
+import classes from "./ProductCard.module.css";
 
 const ProductCard = ({ product, cardBoxType }) => {
   const { addToCart } = useContext(CartContext);
+
+  const addToCartHandler = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    addToCart(product)
+  };
 
   return (
     <Link
@@ -21,11 +30,7 @@ const ProductCard = ({ product, cardBoxType }) => {
               <p className={classes.name}>{product.name}</p>
               <button
                 className={classes.addButton}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  addToCart(product);
-                }}
+                onClick={addToCartHandler}
               >
                 <FontAwesomeIcon icon={faPlus} className={classes.icon} />
               </button>
