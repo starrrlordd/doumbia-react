@@ -1,13 +1,19 @@
-import Card from "../components/UI/Card";
-import Input from "../components/UI/Input";
-
-import classes from "./Checkout.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState } from "react";
 import { CartContext } from "../store/cart-context";
-import BlackButton from "../components/UI/BlackButton";
 import { useNavigate } from "react-router-dom";
+
+import { auth } from "../firebase";
+import { db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
+
+import Card from "../components/UI/Card";
+import Input from "../components/UI/Input";
+import BlackButton from "../components/UI/BlackButton";
+
+import classes from "./Checkout.module.css";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const Checkout = () => {
   const { cart, total: subtotal } = useContext(CartContext);
@@ -17,7 +23,7 @@ const Checkout = () => {
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [region, setRegion] = useState("Select Region");
+  const [region, setRegion] = useState("Greater Accra");
   const [city, setCity] = useState("");
 
   const nameChangeHandler = (event) => {
@@ -50,17 +56,51 @@ const Checkout = () => {
 
   const total = parseFloat(subtotal) + parseFloat(delivery);
 
-  const checkoutSubmissionHandler = (event) => {
-    event.preventDefault();
-
-    console.log(name, surname, email, phone, region, city);
-  };
-
   const navigate = useNavigate();
 
-  const continueToPaymentHandler = () => {
-    navigate("/payment");
-  }
+  const user = auth.currentUser;
+
+  const checkoutSubmissionHandler = async (event) => {
+    event.preventDefault();
+
+    if (cart.length < 1) return;
+
+    if (!name || !surname || !email || !phone || !region || !city) {
+      alert("Fill all input fields");
+      return;
+    }
+
+    const userDelivery = {
+      name,
+      surname,
+      email,
+      phone,
+      region,
+      city,
+      createdAt: new Date(),
+      delivery,
+    };
+
+    console.log(userDelivery);
+
+
+    try {
+      const deliveryRef = doc(
+        db,
+        "users",
+        user.uid,
+        "userDelivery",
+        "details"
+      );
+
+      await setDoc(deliveryRef, userDelivery)
+
+      navigate("/Payment");
+    } catch (error) {
+      console.error("Couldn't save delivery", error);
+    }
+
+  };
 
   return (
     <div className={classes.checkout}>
@@ -108,6 +148,7 @@ const Checkout = () => {
               value={name}
               onChange={nameChangeHandler}
               required
+              autoComplete="name"
             />
             <Input
               type="text"
@@ -116,6 +157,7 @@ const Checkout = () => {
               value={surname}
               onChange={surnameChangeHandler}
               required
+              autoComplete="surnname"
             />
             <Input
               type="email"
@@ -124,6 +166,7 @@ const Checkout = () => {
               value={email}
               onChange={emailChangeHandler}
               required
+              autoComplete="email"
             />
             <Input
               type="phone"
@@ -132,6 +175,7 @@ const Checkout = () => {
               value={phone}
               onChange={phoneChangeHandler}
               required
+              autoComplete="tel"
             />
 
             <select
@@ -140,6 +184,7 @@ const Checkout = () => {
               value={region}
               onChange={regionChangeHandler}
               required
+              autoComplete="address-level1"
             >
               <option value="Select Region" disabled required>
                 Select Region
@@ -154,13 +199,11 @@ const Checkout = () => {
               value={city}
               onChange={cityChangleHandler}
               required
+              autoComplete="address-level2"
             />
           </div>
 
-          <BlackButton
-            className={classes.paymentButton}
-            onClick={continueToPaymentHandler}
-          >
+          <BlackButton className={classes.paymentButton}>
             Continue to Payment
           </BlackButton>
         </form>

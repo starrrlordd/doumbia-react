@@ -1,8 +1,23 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CartContext } from "../store/cart-context";
+
+import { auth, db } from "../firebase";
+import {
+  collection,
+  doc,
+  getDoc,
+  addDoc,
+  Timestamp,
+  getDocs,
+} from "firebase/firestore";
+
 import Card from "../components/UI/Card";
 import WhiteButton from "../components/UI/WhiteButton";
 import BlackButton from "../components/UI/BlackButton";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 import classes from "./Payment.module.css";
 
@@ -12,24 +27,80 @@ import mtn from "../assets/images/icons/mtn.jpeg";
 import telecel from "../assets/images/icons/telecel.jpg";
 import airtelTigo from "../assets/images/icons/airtelTigo.png";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-
-console.log(telecel);
-
 const Payment = () => {
+  const [payment, setPayment] = useState("cash");
+  const [showButton, setShowButton] = useState(false);
+  const { cart, clearCart } = useContext(CartContext);
+
   const navigate = useNavigate();
 
-  const [payment, setPayment] = useState("cash");
+  const user = auth.currentUser;
 
   const choosePaymentHandler = (event) => {
     setPayment(event.target.value);
+    console.log(payment);
+
+    const paymentMethod = payment;
+
+    if (paymentMethod == "unavailable") {
+      setShowButton(false);
+    } else if (paymentMethod == "cash") {
+      setShowButton(true);
+    }
+    console.log(paymentMethod);
   };
 
-  const confirmOrderHandler = () => {
-    console.log("Order confirmed with payment method:", payment);
+  const confirmOrderHandler = async () => {
+    if (!user || cart.length === 0) return;
 
-    navigate("/orderconfirmation")
+    const deliveryRef = doc(db, "users", user.uid, "userDelivery", "details");
+    const deliverySnapshot = await getDoc(deliveryRef);
+
+    console.log(deliverySnapshot.data());
+
+    const cartRef = collection(db, "users", user.uid, "cart");
+    const cartSnapshot = await getDocs(cartRef);
+
+    const totalCartAmount = cartSnapshot.docs.reduce((sum, doc) => {
+      const item = doc.data();
+      console.log(item);
+      return sum + item.price * item.quantity;
+    }, 0);
+    console.log(totalCartAmount);
+
+    const deliveryDetails = deliverySnapshot.data();
+    const deliveryFee = parseFloat(deliveryDetails.delivery);
+    console.log(deliveryFee);
+
+    const totalAmount = totalCartAmount + deliveryFee;
+
+    const orderData = {
+      items: cart,
+      delivery: {
+        name: deliveryDetails.name,
+        surname: deliveryDetails.surname,
+        email: deliveryDetails.email,
+        phone: deliveryDetails.phone,
+        region: deliveryDetails.region,
+        city: deliveryDetails.city,
+        fees: deliveryFee,
+      },
+      totalAmount,
+      status: "pending",
+      createdAt: Timestamp.now(),
+    };
+
+    try {
+      const ordersRef = collection(db, "users", user.uid, "orders");
+      const orderDoc = await addDoc(ordersRef, orderData);
+
+      console.log("Order Created: ", orderDoc.id);
+      console.log(totalAmount);
+      navigate(`/order-confirmation/${orderDoc.id}`);
+    } catch (error) {
+      console.error("Order failed: ", error);
+    }
+    clearCart();
   };
 
   return (
@@ -79,7 +150,8 @@ const Payment = () => {
         </div>
         <div className={classes.confirmOrderButton}>
           <WhiteButton onClick={() => navigate("/checkout")}>Back</WhiteButton>
-          <BlackButton onClick={confirmOrderHandler}>
+
+          <BlackButton onClick={confirmOrderHandler} disabled={showButton}>
             Confirm your order
           </BlackButton>
         </div>

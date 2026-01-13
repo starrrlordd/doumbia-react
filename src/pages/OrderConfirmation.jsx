@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import classes from "./OrderConfirmation.module.css";
 
@@ -8,7 +8,9 @@ import BlackButton from "../components/UI/BlackButton";
 const OrderConfirmation = () => {
   const navigate = useNavigate();
 
-  const orderNumber = Math.floor(Math.random() * 1000);
+  const {orderId} = useParams();
+
+  console.log(orderId);
 
   return (
     <div className={classes.orderConfirmation}>
@@ -21,7 +23,7 @@ const OrderConfirmation = () => {
 
         <div className={classes.orderNumber}>
           <p>
-            Order Number: #<strong>{orderNumber}</strong>{" "}
+            Order Number: #<strong>{orderId}</strong>{" "}
           </p>
           <p>
             Estimated Delivery: <strong>Sat - Sunday 9am - 4pm</strong>

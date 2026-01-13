@@ -26,6 +26,9 @@ export const CartContext = createContext({
 });
 
 export default function CartContextProvider({ children }) {
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
+  
   const [cart, setCart] = useState([]);
 
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -34,20 +37,14 @@ export default function CartContextProvider({ children }) {
     const cartRef = collection(db, "users", userId, "cart");
     const snapshot = await getDocs(cartRef);
 
-    console.log(snapshot)
-
     const cartItems = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
-    console.log(cartItems);
-
     setCart(cartItems);
   };
 
-  const openCart = () => setIsCartOpen(true);
-  const closeCart = () => setIsCartOpen(false);
 
   const addToCart = async (product) => {
     if (!product?.id) return;

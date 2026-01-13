@@ -15,9 +15,13 @@ import { auth } from "../firebase";
 const Cart = () => {
   const { cart: ctxCartItems, clearCart } = useContext(CartContext);
 
+  console.log(ctxCartItems.length);
+
   const navigate = useNavigate();
 
   const proceedToCheckoutHandler = () => {
+    if (ctxCartItems.length < 1 ) return; 
+          
     const user = auth.currentUser;
 
     if (user) {
@@ -38,19 +42,20 @@ const Cart = () => {
           {<CartItem cart={ctxCartItems} />}
         </Card>
         <CartSummary className={classes.cartSummary} />
-        <div className={classes.actions}>
-          <BlackButton
-            className={classes.actionButton}
-            onClick={proceedToCheckoutHandler}
-          >
-            Proceed to checkout
-          </BlackButton>
-          <WhiteButton className={classes.actionButton} onClick={clearCart}>
-            Clear cart
-          </WhiteButton>
-        </div>
+        {ctxCartItems.length > 0 && (
+          <div className={classes.actions}>
+            <BlackButton
+              className={classes.actionButton}
+              onClick={proceedToCheckoutHandler}
+            >
+              Proceed to checkout
+            </BlackButton>
+            <WhiteButton className={classes.actionButton} onClick={clearCart}>
+              Clear cart
+            </WhiteButton>
+          </div>
+        )}
       </div>
-      
     </div>
   );
 };
