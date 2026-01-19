@@ -4,6 +4,13 @@
   padding: 2rem;
 }
 
+.group1 {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 .group {
   margin: 1rem 0;
   display: flex;
@@ -21,6 +28,27 @@
 
 .group2 button  {
     margin: 0 10px;
+}
+
+.group3 {
+    display: flex;
+    gap: 5px;
+}
+
+.group4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.group5 {
+  width: 45%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.group5 button {
+  padding: 10px;
 }
 
 .danger {

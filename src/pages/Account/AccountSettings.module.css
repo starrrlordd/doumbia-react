@@ -1,0 +1,40 @@
+.accountWrapper {
+
+   background-color: white;
+   padding: 30px;
+}
+
+.settingGroup {
+    margin: 20px 0;
+}
+
+.settingGroup1 {
+    display: flex;
+    margin: 10px 0;
+    max-width: 300px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settingButton {
+    max-width: 300px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+}
+
+.settingButton button {
+    padding: 10px;
+}
+
+@media (min-width: 0) and (max-width: 468px) {
+    .settingGroup1 {
+        max-width: 100%;
+    }
+
+    .settingButton {
+        flex-direction: column-reverse;
+        gap: 10px;
+        max-width: 100%;
+    }
+}

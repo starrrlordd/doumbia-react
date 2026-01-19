@@ -1,38 +1,118 @@
+import { useState } from "react";
 import BlackButton from "../../components/UI/BlackButton";
+import Input from "../../components/UI/Input";
+import WhiteButton from "../../components/UI/WhiteButton";
 import classes from "./PersonalInfo.module.css";
 
 const PersonalInfo = () => {
-    return (
-        <div className={classes.card}>
-            <h2>Personal Information</h2>
+  const [enteredName, setEnteredName] = useState("");
+  const [enteredSurname, setEnteredSurname] = useState("");
+  const [enteredEmail, setEnteredEmail] = useState("");
+  const [enteredPhone, setEnteredPhone] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
+  const [enteredBirthdate, setEnteredBirthdate] = useState("");
 
-            <div className={classes.group}>
-                <p>Name</p>
-                <span>Lordd Aleh</span>
-            </div>
+  const nameChangerHandler = (event) => {
+    setEnteredName(event.target.value);
+  };
 
-            <div className={classes.group}>
-                <p>Phone Number</p>
-                <span>+233 XXX XXX XXX</span>
-            </div>
+  const surnameChangeHandler = (event) => {
+    setEnteredSurname(event.target.value);
+  };
 
-            <h2>Login Details</h2>
+  const emailChangeHandler = (event) => {
+    setEnteredEmail(event.target.value);
+  };
 
-            <div className={classes.group2}>
-                <p>Emaill</p>
-                <span>Kafuilord07@gmail.com</span>
-                <BlackButton>Edit</BlackButton>
-            </div>
+  const phoneChangeHandler = (event) => {
+    setEnteredPhone(event.target.value);
+  };
 
-            <div className={classes.group2}>
-                <p>Password</p>
-                <span>*********</span>
-                <BlackButton>Edit</BlackButton>
-            </div>
+  const genderChangeHandler = (event) => {
+    setSelectedGender(event.target.value);
+  };
+  
+  const birthdateChangeHandler = (event) => {
+    setEnteredBirthdate(event.target.value);
 
-            <button className={classes.danger}>Delete Account</button>
+    console.log(enteredBirthdate);
+  }
+
+  const personalInfoSubmitHandler = (event) => {
+    event.preventDefault();
+  };
+
+  return (
+    <form className={classes.card} onSubmit={personalInfoSubmitHandler}>
+      <h2>Contact Details</h2>
+
+      <div className={classes.group1}>
+        <Input
+          placeholder="First Name"
+          onChange={nameChangerHandler}
+          value={enteredName}
+        />
+        
+
+      <div className={classes.group}>
+        <Input placeholder="E-mail" onChange={emailChangeHandler}
+          value={enteredEmail} />
+      </div>
+      <div className={classes.group}>
+        <Input placeholder="Phone" type="tel" onChange={phoneChangeHandler}
+          value={enteredPhone}  />
+      </div>
+      <div className={classes.group1}>
+  <label>Gender: </label>
+  <div className={classes.group3}>
+    <input
+      type="radio"
+      id="male"
+      name="gender"
+      value="male"
+      checked={selectedGender === "male"}
+      onChange={genderChangeHandler} 
+    />
+    <label htmlFor="male"> Male</label>
+  </div>
+  <div className={classes.group3}>
+    <input
+      type="radio"
+      id="female"
+      name="gender"
+      value="female"
+      checked={selectedGender === "female"}
+      onChange={genderChangeHandler} 
+    />
+    <label htmlFor="female">Female</label>
+  </div>
+</div>
+      <div className={classes.group}>
+        <div className={classes.group4}>
+          <label htmlFor="birthDate">Birthday: </label>
+          <input
+            type="date"
+            id="birthDate"
+            name="birthDate"
+            max={new Date().toISOString().split("T")[0]}
+            onChange={birthdateChangeHandler}
+            value={enteredBirthdate}
+          />
         </div>
-    )
-}
+      </div>
+      <div className={classes.group}>
+        <Input placeholder="Enter Password" type="string" />
+      </div>
+
+      <div className={classes.group}>
+        <div className={classes.group5}>
+          <WhiteButton>Cancel</WhiteButton>
+          <BlackButton>Save changes</BlackButton>
+        </div>
+      </div>
+      </div>
+    </form>
+  );
+};
 
 export default PersonalInfo;

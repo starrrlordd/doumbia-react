@@ -1,9 +1,0 @@
-.profile {
-    margin-top: 10px;
-}
-
-@media (min-width: 0) and (max-width: 480px) {
-  .profile {
-    margin: 70px auto;
-  }
-}

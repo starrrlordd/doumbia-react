@@ -35,7 +35,8 @@
 /* 📱 Mobile styles */
 @media (min-width: 0) and (max-width: 468px) {
     .wrapper {
-        margin: 40px 0;
+        margin: 90px 0;
+        padding: 0 20px;
     }
 
   .layout {
@@ -49,4 +50,8 @@
   .layout {
     margin: 10px 0;
   }
+
+  .content {
+  flex: none;
+}
 }

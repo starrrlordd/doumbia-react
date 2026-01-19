@@ -1,9 +1,86 @@
 .card {
   background: #fff;
   border: 1px solid #eee;
-  padding: 2rem;
 }
 
-.group {
-  margin-bottom: 1rem;
+.cardGroup {
+  display: flex;
+}
+
+.ordersHeader {
+  padding: 30px;
+}
+
+.orderItem {
+  padding: 0 30px;
+  border-bottom: 1px solid black;
+}
+
+.itemGroup {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.orderStatus {
+  background-color: #baf8ba;
+  border: 1px solid black;
+  padding: 3px;
+}
+
+.orderStatusPending {
+    background-color: #faf563;
+  border: 1px solid black;
+  padding: 3px;
+}
+
+.orderItemButton {
+  margin-bottom: 10px;
+}
+
+.borderLine {
+  border: 1px solid #b1b1b1;;
+}
+
+.orderItemDetails {
+  padding: 5px 0;
+}
+
+.orderDetailsGroup {
+  display: flex;
+  justify-content: space-between;
+}
+
+.orderDetailsGroup1 {
+  display: flex;
+  gap: 20px;
+}
+
+.orderNavigationWrapper {
+  display: flex;
+  justify-content: center;
+  margin: 30px;
+}
+
+.orderNavigation {
+  display: flex;
+  width: 300px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.orderNavigation p {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.orderItemActive {
+  background-color: black;
+  color: #f9f9f6;
+}
+
+@media (min-width: 0) and (max-width: 468px) {
+  .orderItem {
+    padding: 0 15px;
+  }
 }

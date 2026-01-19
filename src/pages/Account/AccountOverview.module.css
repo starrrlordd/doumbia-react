@@ -1,0 +1,20 @@
+.overviewCard {
+    background-color: white;
+}
+
+.overviewLayout {
+    display: flex;
+    flex-direction: column;
+}
+
+.ovewviewContent {
+    padding: 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+}
+
+@media (min-width: 0) and (max-width: 468px) {
+    .overviewCard {
+        margin: 30px 0;
+    }
+}
+

@@ -12,15 +12,19 @@ const AccountSidebar = ({ mobileOpen, closeMenu }) => {
         mobileOpen ? classes.open : ""
       }`}
     >
-      <NavLink to="personal" onClick={closeMenu}>
-        Personal Information
+      <NavLink to="/account/contact-details" onClick={closeMenu}>
+        Contact Details
       </NavLink>
 
 
-      <NavLink to="orders" onClick={closeMenu}>
-        Orders
+
+      <NavLink to="/account/orders" onClick={closeMenu}>
+        Orders History
       </NavLink>
 
+      <NavLink to="/account/account-settings" onClick={closeMenu}>
+        Account Settings
+      </NavLink>
      
 
       <button className={classes.logout} onClick={logout}>Logout</button>
