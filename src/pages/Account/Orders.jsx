@@ -1,87 +1,107 @@
+import { auth } from "../../firebase";
+import { db } from "../../firebase";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+
 import WhiteButton from "../../components/UI/WhiteButton";
 import classes from "./Orders.module.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 
 const Orders = () => {
+  const [loadedOrders, setLoadedOrders] = useState([]);
+  const [expandedOrder, setExpandedOrder] = useState(null);
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const ordersRef = collection(db, "users", user.uid, "orders");
+        const querySnapshot = await getDocs(ordersRef);
+
+        const loadedOrders = [];
+
+        querySnapshot.forEach((doc) => {
+          loadedOrders.push({ id: doc.id, ...doc.data() });
+        });
+
+        setLoadedOrders(loadedOrders);
+      } catch (error) {
+        console.error("Failed to load orders: ", error);
+      }
+    };
+
+    if (user?.uid) {
+      fetchOrders();
+    }
+  }, [user?.uid]);
+
+  console.log(loadedOrders);
+
   return (
     <div className={classes.card}>
       <div className={classes.ordersHeader}>
         <h2>Orders History</h2>
       </div>
+      {loadedOrders.length === 0 && (
+        <p className={classes.noOrders}>You have no orders yet</p>
+      )}
 
-      <div className={classes.orderItem}>
-        <div className={classes.itemGroup}>
-          <p className={classes.orderNumber}>Order #: ORD-1001</p>
-          <p className={classes.orderAmount}>GHS 840.50</p>
-        </div>
-        <div className={classes.itemGroup}>
-          <p className={classes.orderDate}>2026-01-14</p>
-          <p className={classes.orderStatus}>Delivered</p>
-        </div>
-        <WhiteButton className={classes.orderItemButton}>
-          View details
-        </WhiteButton>
-      </div>
-      <div className={classes.orderItem}>
-        <div className={classes.itemGroup}>
-          <p className={classes.orderNumber}>Order #: ORD-1001</p>
-          <p className={classes.orderAmount}>GHS 840.50</p>
-        </div>
-        <div className={classes.itemGroup}>
-          <p className={classes.orderDate}>2026-01-14</p>
-          <p className={classes.orderStatusPending}>Pending</p>
-        </div>
-        <WhiteButton className={classes.orderItemButton}>
-          Hide details
-        </WhiteButton>
-        <div className={classes.borderLine}></div>
-        <div className={classes.orderItemDetails}>
-          <div className={classes.orderDetailsGroup}>
-            <div className={classes.orderDetailsGroup1}>
-              <p>Rush soul in the flesh</p>
-              <p>x 2</p>
+      {loadedOrders.map((orderItem) => (
+        <div className={classes.orderItem} key={orderItem.id}>
+          <div className={classes.itemGroup}>
+            <p className={classes.orderNumber}>Order #: {orderItem.id}</p>
+            <p className={classes.orderAmount}>GHS {orderItem.totalAmount}</p>
+          </div>
+          <div className={classes.itemGroup}>
+            <p className={classes.orderDate}>
+              {orderItem.createdAt.toDate().toLocaleDateString()}
+            </p>
+            <p className={classes.orderStatusPending}>Pending</p>
+          </div>
+          <WhiteButton
+            className={classes.orderItemButton}
+            onClick={() =>
+              setExpandedOrder(
+                expandedOrder === orderItem.id ? null : orderItem.id
+              )
+            }
+          >
+            {expandedOrder === orderItem.id ? "Hide details" : "View Details"}
+          </WhiteButton>
+          {expandedOrder === orderItem.id && (
+            <div>
+              <div className={classes.borderLine}></div>
+              <div className={classes.orderItemDetails}>
+                {orderItem.items.map((item) => (
+                  <div className={classes.orderDetailsGroup}>
+                    <div className={classes.orderDetailsGroup1} key={item.id}>
+                      <p>{item.name}</p>
+                      <p>x {item.quantity}</p>
+                    </div>
+                    <p>GHS {item.price}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <p>GHS 560.00</p>
+          )}
+        </div>
+      ))}
+
+      {loadedOrders.length > 0 && (
+        <div className={classes.orderNavigationWrapper}>
+          <div className={classes.orderNavigation}>
+            <FontAwesomeIcon icon={faArrowLeft} />
+            <button className={classes.activeButton}>1</button>
+            <button className={classes.nonActiveButton}>2</button>
+         
+            
+            <FontAwesomeIcon icon={faArrowRight} />
           </div>
         </div>
-        <div className={classes.orderItemDetails}>
-          <div className={classes.orderDetailsGroup}>
-            <div className={classes.orderDetailsGroup1}>
-              <p>Cotton Strip Denim shirt</p>
-              <p>x 1</p>
-            </div>
-            <p>GHS 560.00</p>
-          </div>
-        </div>
-      </div>
-      <div className={classes.orderItem}>
-        <div className={classes.itemGroup}>
-          <p className={classes.orderNumber}>Order #: ORD-1001</p>
-          <p className={classes.orderAmount}>GHS 840.50</p>
-        </div>
-        <div className={classes.itemGroup}>
-          <p className={classes.orderDate}>2026-01-14</p>
-          <p className={classes.orderStatus}>Delivered</p>
-        </div>
-        <WhiteButton className={classes.orderItemButton}>
-          View details
-        </WhiteButton>
-      </div>
-
-      <div className={classes.orderNavigationWrapper}>
-        <div className={classes.orderNavigation}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-          <p className={classes.orderItemActive}>1</p>
-          <p>2</p>
-          <p>3</p>
-          <p>4</p>
-          <p>5</p>
-          <FontAwesomeIcon icon={faArrowRight} />
-        </div>
-      </div>
+      )}
     </div>
   );
 };

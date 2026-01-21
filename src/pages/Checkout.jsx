@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "../store/cart-context";
 import { useNavigate } from "react-router-dom";
 
 import { auth } from "../firebase";
 import { db } from "../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
 
 import Card from "../components/UI/Card";
 import Input from "../components/UI/Input";
@@ -25,6 +25,8 @@ const Checkout = () => {
   const [phone, setPhone] = useState("");
   const [region, setRegion] = useState("Greater Accra");
   const [city, setCity] = useState("");
+
+  const [userDetails, setUserDetails] = useState([]);
 
   const nameChangeHandler = (event) => {
     setName(event.target.value);
@@ -83,24 +85,45 @@ const Checkout = () => {
 
     console.log(userDelivery);
 
-
     try {
-      const deliveryRef = doc(
-        db,
-        "users",
-        user.uid,
-        "userDelivery",
-        "details"
-      );
+      const deliveryRef = doc(db, "users", user.uid, "userDelivery", "details");
 
-      await setDoc(deliveryRef, userDelivery)
+      await setDoc(deliveryRef, userDelivery);
 
       navigate("/Payment");
     } catch (error) {
       console.error("Couldn't save delivery", error);
     }
-
   };
+
+  useEffect(() => {
+    const fetchContactDetails = async () => {
+      if (!user) return;
+
+      try {
+        const detailsRef = doc(db, "users", user.uid, "userDelivery", "details");
+        const detailsSnapshot = await getDoc(detailsRef);
+
+        if (detailsSnapshot.exists()) {
+          const userDetails = detailsSnapshot.data();
+
+          setName(userDetails.name || "");
+          setSurname(userDetails.surname || "");
+          setEmail(userDetails.email || "");
+          setPhone(userDetails.phone || "");
+          setRegion(userDetails.region || "Greater Accra");
+          setCity(userDetails.city || "");
+          setDelivery(userDetails.delivery || "0");
+        }
+      } catch (error) {
+        console.error("Failed to fetch contact details: ", error);
+      }
+    };
+
+    fetchContactDetails();
+  }, [user]);
+
+  console.log(userDetails);
 
   return (
     <div className={classes.checkout}>
@@ -124,6 +147,7 @@ const Checkout = () => {
               checked={delivery === "25"}
               onChange={deliveryChangeHandler}
               id="express"
+              autoComplete=""
             />
             <label htmlFor="express">Express Delivery - ¢25.00</label>
           </div>

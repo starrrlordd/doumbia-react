@@ -1,12 +1,16 @@
 import { useState } from "react";
 
+import { auth } from "../../firebase";
+import { db } from "../../firebase";
+import { doc, setDoc } from "firebase/firestore";
+
 import classes from "./ContactDetails.module.css";
 import BlackButton from "../../components/UI/BlackButton";
 import Input from "../../components/UI/Input";
-import WhiteButton from "../../components/UI/WhiteButton";
-import Card from "../../components/UI/Card";
 
 const ContactDetails = () => {
+  const user = auth.currentUser;
+
   const [enteredName, setEnteredName] = useState("");
   const [enteredSurname, setEnteredSurname] = useState("");
   const [enteredEmail, setEnteredEmail] = useState("");
@@ -36,30 +40,52 @@ const ContactDetails = () => {
 
   const birthdateChangeHandler = (event) => {
     setEnteredBirthdate(event.target.value);
-
-    console.log(enteredBirthdate);
   };
 
-  const contactDetailsSubmitHandler = (event) => {
+  const contactDetailsSubmitHandler = async (event) => {
     event.preventDefault();
+
+    const contactDetails = {
+      name: enteredName,
+      surname: enteredSurname,
+      email: enteredEmail,
+      phone: enteredPhone,
+      gender: selectedGender,
+      birthdate: enteredBirthdate,
+    };
+
+    try {
+      const contactRef = doc(db, "users", user.uid, "contactDetails", "details");
+
+      await setDoc(contactRef, contactDetails);
+    } catch (error) {
+      console.error("couldnt save contact details: ", error);
+    }
   };
 
   return (
     <div className={classes.contactDetails}>
       <h2>Contact Details</h2>
 
-      <Card className={classes.contactCard}>
+      <form
+        onSubmit={contactDetailsSubmitHandler}
+        className={classes.contactCard}
+      >
         <div>
           <div className={classes.fullName}>
             <Input
               placeholder="First Name"
               onChange={nameChangerHandler}
               value={enteredName}
+              autocomplete="given-name"
+              required
             />
             <Input
               placeholder="Surname"
               onChange={surnameChangeHandler}
               value={enteredSurname}
+              autocomplete="family-name"
+              required
             />
           </div>
 
@@ -68,6 +94,9 @@ const ContactDetails = () => {
               placeholder="E-mail"
               onChange={emailChangeHandler}
               value={enteredEmail}
+              type="email"
+              autocomplete="email"
+              required
             />
           </div>
           <div className={classes.group}>
@@ -76,6 +105,8 @@ const ContactDetails = () => {
               type="tel"
               onChange={phoneChangeHandler}
               value={enteredPhone}
+              autocomplete="tel"
+              required
             />
           </div>
           <div className={classes.genderGroup}>
@@ -103,29 +134,29 @@ const ContactDetails = () => {
               <label htmlFor="female">Female</label>
             </div>
           </div>
-          
-            <div className={classes.group4}>
-              <label htmlFor="birthDate">Birthday: </label>
-              <input
-                type="date"
-                id="birthDate"
-                name="birthDate"
-                max={new Date().toISOString().split("T")[0]}
-                onChange={birthdateChangeHandler}
-                value={enteredBirthdate}
-              />
-            </div>
-          
+
+          <div className={classes.group4}>
+            <label htmlFor="birthDate">Birthday: </label>
+            <input
+              type="date"
+              id="birthDate"
+              name="birthDate"
+              max={new Date().toISOString().split("T")[0]}
+              onChange={birthdateChangeHandler}
+              value={enteredBirthdate}
+              required
+            />
+          </div>
+
           <div className={classes.group}>
-            <Input placeholder="Enter Password" type="string" />
+            <Input placeholder="Enter Password" type="password" required />
           </div>
 
           <div className={classes.group5}>
             <BlackButton>Save changes</BlackButton>
-            <WhiteButton>Cancel</WhiteButton>
           </div>
         </div>
-      </Card>
+      </form>
     </div>
   );
 };

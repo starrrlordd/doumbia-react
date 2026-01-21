@@ -11,17 +11,12 @@ const AccountLayout = () => {
 
   return (
     <section className={classes.wrapper}>
-      {/* Mobile overlay */}
       {isMobileSize && showMenu && (
-        <div
-          className={classes.overlay}
-          onClick={() => setShowMenu(false)}
-        />
+        <div className={classes.overlay} onClick={() => setShowMenu(false)} />
       )}
 
       <h1>Account Overview</h1>
 
-      {/* Mobile menu button only */}
       {isMobileSize && (
         <button
           className={classes.menuBtn}

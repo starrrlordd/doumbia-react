@@ -1,8 +1,16 @@
+import { auth } from "../../firebase";
+import { db } from "../../firebase";
+import { collection, getDocs } from "firebase/firestore";
+
 import BlackButton from "../../components/UI/BlackButton";
 import WhiteButton from "../../components/UI/WhiteButton";
 import classes from "./AccountSettings.module.css";
 
 const AccountSettings = () => {
+  const user = auth.currentUser;
+
+  console.log(user.email)
+
   return (
     <div className={classes.accountWrapper}>
       <h2>Account Settings</h2>
@@ -10,7 +18,7 @@ const AccountSettings = () => {
       <div className={classes.settingGroup}>
         <h2>Email</h2>
         <div className={classes.settingGroup1}>
-          <p>kafuilord07@gmail.com</p>
+          <p>{user.email}</p>
           <BlackButton>Edit</BlackButton>
         </div>
       </div>

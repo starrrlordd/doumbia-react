@@ -20,6 +20,7 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
+  align-items: center;
 }
 
 .orderStatus {
@@ -49,6 +50,7 @@
 .orderDetailsGroup {
   display: flex;
   justify-content: space-between;
+  margin: 5px 0;
 }
 
 .orderDetailsGroup1 {
@@ -77,6 +79,26 @@
 .orderItemActive {
   background-color: black;
   color: #f9f9f6;
+}
+
+.noOrders {
+  margin: 30px 30px;
+}
+
+.activeButton {
+    background-color: black;
+    color: white;
+    border: 1px solid black;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.nonActiveButton {
+    background-color: #f9f9f6;
+    color: black;
+    border: 1px solid black;
+    padding: 5px;
+    cursor: pointer;
 }
 
 @media (min-width: 0) and (max-width: 468px) {
