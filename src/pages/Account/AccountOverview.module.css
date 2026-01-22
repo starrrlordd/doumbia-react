@@ -1,20 +1,72 @@
 .overviewCard {
-    background-color: white;
+  background-color: white;
 }
 
 .overviewLayout {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .ovewviewContent {
-    padding: 30px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+  padding: 30px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+}
+
+.LogoutModal {
+    background: white;
+}
+
+
+.logoutActions {
+    display: flex;
+    justify-content: space-around;
+}
+
+.modalBox p {
+  font-size: 20px;
+  margin: 20px 0;
+  color: #f9f9f6;
 }
 
 @media (min-width: 0) and (max-width: 468px) {
-    .overviewCard {
-        margin: 30px 0;
-    }
-}
+  .overviewCard {
+    margin: 30px 0;
+  }
 
+  .logout {
+    padding: 30px;
+    background: transparent;
+    text-align: left;
+    border: none;
+  }
+
+  .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    z-index: 998;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .logoutModal {
+    margin: 90% 0;
+    text-align: center;
+    
+  }
+  
+  .logoutActions {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logoutActions button {
+    width: 300px;
+    padding: 10px;
+  }
+}

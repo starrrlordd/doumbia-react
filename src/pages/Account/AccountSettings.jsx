@@ -35,7 +35,6 @@ const AccountSettings = () => {
       </div>
 
       <div className={classes.settingButton}>
-      <WhiteButton>Cancel</WhiteButton>
       <BlackButton>Save Changes</BlackButton>
       </div>
     </div>

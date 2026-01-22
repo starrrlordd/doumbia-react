@@ -1,35 +1,41 @@
-import { Outlet } from "react-router-dom";
-import { useContext, useState } from "react";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { useContext } from "react";
 import { WindowSizeContext } from "../../store/windowSize-context";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import AccountSidebar from "./AccountSidebar";
 import classes from "./AccountLayout.module.css";
 
 const AccountLayout = () => {
-  const [showMenu, setShowMenu] = useState(false);
   const { isMobileSize } = useContext(WindowSizeContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const backButtonHandler = () => {
+    navigate("/account");
+  }
+
+  const showBackButton = isMobileSize && location.pathname !== "/account";
 
   return (
     <section className={classes.wrapper}>
-      {isMobileSize && showMenu && (
-        <div className={classes.overlay} onClick={() => setShowMenu(false)} />
-      )}
+      
 
       <h1>Account Overview</h1>
 
-      {isMobileSize && (
+      {showBackButton && (
         <button
           className={classes.menuBtn}
-          onClick={() => setShowMenu((prev) => !prev)}
+          onClick={backButtonHandler}
         >
-          Account Menu
+          <FontAwesomeIcon icon={faArrowLeft} />
         </button>
       )}
 
       <div className={classes.layout}>
-        <AccountSidebar
-          mobileOpen={isMobileSize ? showMenu : true}
-          closeMenu={() => setShowMenu(false)}
+        <AccountSidebar          
         />
 
         <div className={classes.content}>

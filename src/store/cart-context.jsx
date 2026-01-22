@@ -28,7 +28,7 @@ export const CartContext = createContext({
 export default function CartContextProvider({ children }) {
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
-  
+
   const [cart, setCart] = useState([]);
 
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -45,15 +45,32 @@ export default function CartContextProvider({ children }) {
     setCart(cartItems);
   };
 
-
   const addToCart = async (product) => {
     if (!product?.id) return;
 
     const user = auth.currentUser;
 
-    console.log(user.email);
+    if (!user) {
+      setCart((prevCart) => {
+        const existingItem = prevCart.find((item) => item.id === product.id);
 
-    if (!user) return;
+        let updatedCart;
+        if (existingItem) {
+          updatedCart = prevCart.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          );
+        } else {
+          updatedCart = [...prevCart, { ...product, quantity: 1 }];
+        }
+
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        return updatedCart;
+      });
+      openCart();
+      return;
+    }
 
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
@@ -76,12 +93,10 @@ export default function CartContextProvider({ children }) {
 
       if (cartSnap.exists()) {
         const cartData = cartSnap.data();
-        
+
         await updateDoc(cartRef, {
           quantity: cartData.quantity + 1,
-        })
-
-        
+        });
       } else {
         await setDoc(cartRef, {
           userId: user.uid,
@@ -98,6 +113,42 @@ export default function CartContextProvider({ children }) {
     }
   };
 
+  const syncLocalCartWithFirestore = async (userId) => {
+    const localCart = JSON.parse(localStorage.getItem("cart")) || [];
+    console.log(localCart.length);
+
+
+    try {
+      for (const item of localCart) {
+        const cartRef = doc(db, "users", userId, "cart", item.id);
+        const cartSnap = await getDoc(cartRef);
+
+        if (cartSnap.exists()) {
+          const existing = cartSnap.data();
+
+          await updateDoc(cartRef, {
+            quantity: existing.quantity + item.quantity,
+          });
+        } else {
+          await setDoc(cartRef, {
+            userId,
+            productId: item.id,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            quantity: item.quantity,
+            createdAt: new Date(),
+          });
+        }
+      }
+      localStorage.removeItem("cart");
+
+      fetchCart(userId);
+    } catch (error) {
+      console.error("Failed to sync local cart: ", error);
+    }
+  };
+
   const removeItem = async (id) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
 
@@ -111,13 +162,13 @@ export default function CartContextProvider({ children }) {
   const increaseCart = async (id) => {
     const user = auth.currentUser;
     if (!user) return;
-    
+
     const item = cart.find((item) => item.id === id);
     if (!item) return;
 
     await updateDoc(doc(db, "users", user.uid, "cart", id), {
       quantity: item.quantity + 1,
-    })
+    });
 
     fetchCart(user.uid);
   };
@@ -134,7 +185,7 @@ export default function CartContextProvider({ children }) {
     } else {
       await updateDoc(doc(db, "users", user.uid, "cart", id), {
         quantity: item.quantity - 1,
-      }) 
+      });
 
       fetchCart(user.uid);
     }
@@ -159,9 +210,10 @@ export default function CartContextProvider({ children }) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        fetchCart(user.uid);
+        syncLocalCartWithFirestore(user.uid);
       } else {
-        setCart([]);
+        const localCart = JSON.parse(localStorage.getItem("cart")) || [];
+        setCart(localCart);
       }
     });
 
@@ -182,7 +234,6 @@ export default function CartContextProvider({ children }) {
     openCart,
     closeCart,
     setIsCartOpen,
-    
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

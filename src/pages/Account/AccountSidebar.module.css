@@ -25,6 +25,20 @@
   cursor: pointer;
 }
 
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 998;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+
 @media (min-width: 0) and (max-width: 468px) {
   .sidebar {
     position: fixed;
@@ -38,4 +52,9 @@
   .sidebar.open {
     left: 0;
   }
+
+  .modal {
+  margin: 100% 0;
+  text-align: center;
+}
 }
