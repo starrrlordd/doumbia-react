@@ -9,10 +9,9 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../store/auth-context";
 
 const AccountOverview = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { logout } = useContext(AuthContext);
-
 
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -20,7 +19,7 @@ const AccountOverview = () => {
     logout();
     navigate("/shop");
     setShowConfirm(false);
-    console.log("logout button clicked")
+    console.log("logout button clicked");
   };
 
   return (
@@ -42,24 +41,33 @@ const AccountOverview = () => {
           >
             Account Settings
           </NavLink>
-          <button className={classes.logout} onClick={() => setShowConfirm(true)}>
+          <div
+            className={classes.logout}
+            onClick={() => setShowConfirm(true)}
+            role="button"
+            aria-label="logout"
+          >
             Logout
-          </button>
+          </div>
         </div>
 
         {showConfirm && (
           <div className={classes.backdrop}>
-          <div className={classes.logoutModal}>
-          <div className={classes.modalBox}>
-            <p>Are you sure you want to logout?</p>
+            <div className={classes.logoutModal}>
+              <div className={classes.modalBox}>
+                <p>Are you sure you want to logout?</p>
 
-            <div className={classes.logoutActions}>
-              <WhiteButton onClick={() => setShowConfirm(false)}>Cancel</WhiteButton>
-              <BlackButton onClick={confirmLogoutHandler}>Yes, I want to logout</BlackButton>
+                <div className={classes.logoutActions}>
+                  <WhiteButton onClick={() => setShowConfirm(false)}>
+                    Cancel
+                  </WhiteButton>
+                  <BlackButton onClick={confirmLogoutHandler}>
+                    Yes, I want to logout
+                  </BlackButton>
+                </div>
+              </div>
             </div>
           </div>
-          </div>
-        </div>
         )}
       </Card>
     </div>

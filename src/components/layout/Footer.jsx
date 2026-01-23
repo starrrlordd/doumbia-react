@@ -69,7 +69,7 @@ const Footer = () => {
       </ul>
 
       <p className={classes["legal-info"]}>
-        ©2025 Doumbia Online All rights reserved
+        ©2026 Doumbia Online All rights reserved
       </p>
     </footer>
   );

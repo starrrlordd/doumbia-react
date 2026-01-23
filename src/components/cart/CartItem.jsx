@@ -5,12 +5,12 @@ import { CartContext } from "../../store/cart-context";
 import { useContext } from "react";
 
 const CartItem = () => {
-  const { cart, removeItem, increaseCart, decreaseCart } = useContext(CartContext);
+  const { cart, removeItem, increaseCart, decreaseCart } =
+    useContext(CartContext);
 
   const cartItems = cart;
 
   console.log(cartItems);
-  
 
   return (
     <ul className={classes.cartItem}>
@@ -23,9 +23,23 @@ const CartItem = () => {
               <div>¢{item.price}</div>
             </div>
             <div className={classes.controls}>
-              <button onClick={() => decreaseCart(item.id)}>-</button>
+              <div
+                onClick={() => decreaseCart(item.id)}
+                role="button"
+                aria-label="decrease button"
+                className={classes.controlsButton}
+              >
+                -
+              </div>
               <div className={classes.quantity}>{item.quantity}</div>
-              <button onClick={() => increaseCart(item.id)}>+</button>
+              <div
+                onClick={() => increaseCart(item.id)}
+                role="button"
+                aria-label="decrease button"
+                className={classes.controlsButton}
+              >
+                +
+              </div>
             </div>
             <div className={classes.actions}>
               <BlackButton

@@ -145,6 +145,7 @@ const ContactDetails = () => {
               onChange={birthdateChangeHandler}
               value={enteredBirthdate}
               required
+              className={classes.birthdayInput}
             />
           </div>
 

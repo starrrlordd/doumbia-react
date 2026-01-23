@@ -31,3 +31,11 @@ a {
 h3 {
   font-size: var(--header-text);
 }
+
+button,
+input[type="button"],
+input[type="submit"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
+}

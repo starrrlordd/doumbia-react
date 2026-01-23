@@ -16,7 +16,7 @@
   padding: 10px;
 }
 
-.newsletter-button {
+.newsletterButton {
   width: 90px;
   height: 40px;
   background: transparent;
@@ -30,7 +30,7 @@
 }
 
 @media (min-width: 0) and (max-width: 480px) {
-    .newsletter-container {
+  .newsletter-container {
     text-align: left;
   }
 
@@ -47,10 +47,14 @@
   }
 
   .newsletter-form input {
+     -webkit-appearance: none;
+    appearance: none;
     width: 100%;
   }
 
-  .newsletter-button {
+  .newsletterButton {
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
   }
 }

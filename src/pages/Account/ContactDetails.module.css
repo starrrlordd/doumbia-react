@@ -10,11 +10,9 @@
 }
 
 .contactDetails h2 {
-
   background-color: white;
- 
-    padding: 20px 20px 0 20px;
 
+  padding: 20px 20px 0 20px;
 }
 
 .group {
@@ -63,6 +61,20 @@
 
 .group4 label {
   margin-right: 5px;
+}
+
+.birthdayInput {
+  -webkit-appearance: none;
+  appearance: none;
+
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 12px;
+
+  font-family: inherit;
+  font-size: 16px; 
+  box-sizing: border-box;
 }
 
 .group5 button {

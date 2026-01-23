@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import classes from "./Newsletter.module.css";
 import Input from "../UI/Input";
+import WhiteButton from "../UI/WhiteButton";
 
 const Newsletter = () => {
   const [userMail, setUserMail] = useState("");
@@ -27,7 +28,7 @@ const Newsletter = () => {
               placeholder="E-mail"
               onChange={emailChangeHandler}
             />
-            <button className={classes["newsletter-button"]}>Sign Up</button>
+            <WhiteButton className={classes["newsletterButton"]}>Sign Up</WhiteButton>
           </form>
           <p className={classes.subscribing}>
             By Subscribing, you confirm that you have read the

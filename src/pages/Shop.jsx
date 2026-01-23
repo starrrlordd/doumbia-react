@@ -28,8 +28,6 @@ const Shop = () => {
 
   const { cart } = useContext(CartContext);
 
-  // console.log(cart);
-
   const [gridColumns, setGridColumns] = useState(2);
 
   const [cardBox, setCardBox] = useState("card2");
@@ -58,6 +56,7 @@ const Shop = () => {
 
   const onFilterSelect = (item) => {
     setSelectedCategory(item);
+    console.log(`${item} is active`);
   };
 
   const { search } = useLocation();
@@ -121,6 +120,8 @@ const Shop = () => {
         onFilterSelect={onFilterSelect}
         onGridChange={handleGridChange}
         handleCardBoxType={handleCardBoxType}
+        isActive={selectedCategory}
+        
       />
 
       <ProductItems

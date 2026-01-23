@@ -5,7 +5,7 @@ import DoubleRectangle from "../UI/FilterBoxes/DoubleRectangle";
 import FourSquare from "../UI/FilterBoxes/FourSquare";
 import { WindowSizeContext } from "../../store/windowSize-context";
 
-const FilterBar = ({ items, onFilterSelect, onGridChange }) => {
+const FilterBar = ({ items, onFilterSelect, onGridChange, isActive }) => {
   const { isMobileSize } = useContext(WindowSizeContext);
 
   return (
@@ -36,7 +36,11 @@ const FilterBar = ({ items, onFilterSelect, onGridChange }) => {
       </div>
       <ul className={classes.filter}>
         {items.map((item, index) => (
-          <li key={index} onClick={() => onFilterSelect(item)}>
+          <li
+            key={index}
+            onClick={() => onFilterSelect(item)}
+            className={isActive === item ? classes.filterIsActive : ""}
+          >
             {item}
           </li>
         ))}

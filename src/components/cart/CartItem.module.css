@@ -21,8 +21,8 @@
 } */
 
 .description p {
-    margin-bottom: 5px;
-    width: 200px;
+  margin-bottom: 5px;
+  width: 200px;
 }
 
 .quantity {
@@ -34,11 +34,13 @@
   align-items: center;
 }
 
-.controls button {
+.controlsButton {
   font-size: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .actions {
@@ -57,8 +59,8 @@
   }
 
   .description {
-  margin-right: 0;
-}
+    margin-right: 0;
+  }
 
   .description p {
     padding: 0;

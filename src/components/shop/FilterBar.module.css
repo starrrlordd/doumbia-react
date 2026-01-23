@@ -22,9 +22,14 @@
   margin-bottom: 20px;
 }
 
-.filter li {
+/* .filter li {
   cursor: pointer;
-}
+} */
+
+.filterIsActive {
+  text-decoration: underline;
+  color: black;
+  text-underline-offset: 5px;}
 
 @media (min-width: 0) and (max-width: 480px) {
   .filterBar {

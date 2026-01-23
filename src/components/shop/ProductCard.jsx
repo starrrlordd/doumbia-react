@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import { CartContext } from "../../store/cart-context";
 
@@ -14,32 +14,26 @@ const ProductCard = ({ product, cardBoxType }) => {
   const addToCartHandler = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    addToCart(product)
+    addToCart(product);
   };
 
   return (
-    <Link
-      to={`/product/${product.id}`}
-      className={classes.cardLink}
-    >
+    <NavLink to={`/product/${product.id}`} className={classes.cardLink}>
       <div className={`${classes.card} ${classes[cardBoxType]}`}>
         <img src={product.image} alt={product.name} className={classes.image} />
         {cardBoxType !== "card3" && (
           <div className={classes.details}>
             <div className={classes.extra}>
               <p className={classes.name}>{product.name}</p>
-              <button
-                className={classes.addButton}
-                onClick={addToCartHandler}
-              >
+              <div className={classes.addButton} onClick={addToCartHandler} role="button" aria-label="Add to cart">
                 <FontAwesomeIcon icon={faPlus} className={classes.icon} />
-              </button>
+              </div>
             </div>
             <p className={classes.price}>¢{product.price}</p>
           </div>
         )}
       </div>
-    </Link>
+    </NavLink>
   );
 };
 

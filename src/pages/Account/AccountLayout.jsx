@@ -13,30 +13,31 @@ const AccountLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const backButtonHandler = () => {
+  const backButtonHandler = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     navigate("/account");
-  }
+  };
 
   const showBackButton = isMobileSize && location.pathname !== "/account";
 
   return (
     <section className={classes.wrapper}>
-      
-
       <h1>Account Overview</h1>
 
       {showBackButton && (
-        <button
+        <div
           className={classes.menuBtn}
           onClick={backButtonHandler}
+          role="button"
+          aria-label="back"
         >
           <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
+        </div>
       )}
 
       <div className={classes.layout}>
-        <AccountSidebar          
-        />
+        <AccountSidebar />
 
         <div className={classes.content}>
           <Outlet />
