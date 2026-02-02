@@ -22,9 +22,9 @@
   margin-bottom: 20px;
 }
 
-/* .filter li {
+.filter li {
   cursor: pointer;
-} */
+}
 
 .filterIsActive {
   text-decoration: underline;

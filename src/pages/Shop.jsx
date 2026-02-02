@@ -1,5 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+  startAfter,
+  where,
+} from "firebase/firestore";
 import { useLocation } from "react-router-dom";
 import { CartContext } from "../store/cart-context";
 
@@ -9,9 +18,16 @@ import Newsletter from "../components/layout/Newsletter";
 import CartSlider from "../components/UI/CartSlider";
 
 import classes from "./Shop.module.css";
-
+import BlackButton from "../components/UI/BlackButton";
 
 const Shop = () => {
+  const PRODUCTS_PER_PAGE = 8;
+  const [lastDoc, setLastDoc] = useState(null);
+  const [hasMore, setHasMore] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [products, setProducts] = useState([]);
+
   const filterBarItems = [
     "Inventory",
     "Tshirts",
@@ -43,16 +59,12 @@ const Shop = () => {
     console.log("gridColumns");
   };
 
-  const [products, setProducts] = useState([]);
-
-  const [isLoading, setIsLoading] = useState(true);
-
   const [selectedCategory, setSelectedCategory] = useState("Inventory");
 
-  const filteredProducts =
-    selectedCategory === "Inventory"
-      ? products
-      : products.filter((item) => item.category === selectedCategory);
+  // const filteredProducts =
+  //   selectedCategory === "Inventory"
+  //     ? products
+  //     : products.filter((item) => item.category === selectedCategory);
 
   const onFilterSelect = (item) => {
     setSelectedCategory(item);
@@ -73,43 +85,80 @@ const Shop = () => {
 
   const db = getFirestore();
 
+  const fetchProducts = async (reset = false) => {
+    setIsLoading(true);
+
+    let q;
+
+    if (selectedCategory === "Inventory") {
+      q =
+        reset || !lastDoc
+          ? query(
+              collection(db, "products"),
+              orderBy("createdAt"),
+              limit(PRODUCTS_PER_PAGE),
+            )
+          : query(
+              collection(db, "products"),
+              orderBy("createdAt"),
+              startAfter(lastDoc),
+              limit(PRODUCTS_PER_PAGE),
+            );
+    } else {
+      q =
+        reset || !lastDoc
+          ? query(
+              collection(db, "products"),
+              where("category", "==", selectedCategory),
+              orderBy("createdAt"),
+              limit(PRODUCTS_PER_PAGE),
+            )
+          : query(
+              collection(db, "products"),
+              where("category", "==", selectedCategory),
+              orderBy("createdAt"),
+              startAfter(lastDoc),
+              limit(PRODUCTS_PER_PAGE),
+            );
+    }
+
+    const snapshot = await getDocs(q);
+
+    const loaded = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setProducts((prev) => (reset ? loaded : [...prev, ...loaded]));
+
+    setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+    setHasMore(snapshot.docs.length === PRODUCTS_PER_PAGE);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        const loadedProducts = [];
+    setProducts([]);
+    setLastDoc(null);
+    setHasMore(true);
+    fetchProducts(true);
+  }, [selectedCategory]);
 
-        querySnapshot.forEach((doc) => {
-          loadedProducts.push({ id: doc.id, ...doc.data() });
-        });
+  // useEffect(() => {
+  //   return () => {
+  //     sessionStorage.setItem("shopScrollY", window.scrollY.toString());
+  //   };
+  // }, []);
 
-        setProducts(loadedProducts);
+  // useEffect(() => {
+  //   if (isLoading) return;
 
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch products from database : ", error);
-      }
-    };
+  //   const savedScrollY = sessionStorage.getItem("shopScrollY");
 
-    fetchProducts();
-  }, [db]);
-  // console.log(products);  
+  //   requestAnimationFrame(() => {
+  //     window.scrollTo(0, savedScrollY ? Number(savedScrollY) : 0);
+  //   });
+  // }, [isLoading]);
 
-  useEffect(() => {
-    return () => {
-      sessionStorage.setItem("shopScrollY", window.scrollY.toString());
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const savedScrollY = sessionStorage.getItem("shopScrollY");
-
-    requestAnimationFrame(() => {
-      window.scrollTo(0, savedScrollY ? Number(savedScrollY) : 0);
-    });
-  }, [isLoading]);
 
   return (
     <div className={classes.shop}>
@@ -121,14 +170,21 @@ const Shop = () => {
         onGridChange={handleGridChange}
         handleCardBoxType={handleCardBoxType}
         isActive={selectedCategory}
-        
       />
 
       <ProductItems
-        products={filteredProducts}
+        products={products}
         layoutClass={`grid-${gridColumns}`}
         cardBoxType={cardBox}
       />
+
+      {hasMore && !isLoading && (
+        <div className={classes.loadMore}>
+          <BlackButton onClick={() => fetchProducts()}>
+            Load more products
+          </BlackButton>
+        </div>
+      )}
 
       <Newsletter />
     </div>

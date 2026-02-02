@@ -68,6 +68,20 @@
   padding: 10px;
 }
 
+.loadMore {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.isLoading {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 ;
+}
+
 @media (min-width: 0) and (max-width: 480px) {
   .card {
     margin-top: 0;

@@ -20,7 +20,7 @@ const ProductCard = ({ product, cardBoxType }) => {
   return (
     <NavLink to={`/product/${product.id}`} className={classes.cardLink}>
       <div className={`${classes.card} ${classes[cardBoxType]}`}>
-        <img src={product.image} alt={product.name} className={classes.image} />
+        <img src={product.image} alt={product.name} className={classes.image} loading="lazy"/>
         {cardBoxType !== "card3" && (
           <div className={classes.details}>
             <div className={classes.extra}>
