@@ -45,8 +45,8 @@ const Home = () => {
     <CartSlider />
       <main role="main">
         <section className={classes.hero}>
-          <NavLink to="/shop">
-            <video autoPlay muted loop className={classes.heroVideo}>
+          <NavLink to="/shop" className={classes.heroLink}>
+            <video autoPlay muted loop playsInline className={classes.heroVideo}>
               <source src={heroVideo} type="video/mp4" /> Your browser does not
               support the video tag.
             </video>

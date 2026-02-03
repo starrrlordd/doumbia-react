@@ -39,7 +39,7 @@ const Shop = () => {
     "Sweaters",
     "Hoodies",
     "Shorts",
-    "Caps",
+    "Khaki",
   ];
 
   const { cart } = useContext(CartContext);

@@ -16,6 +16,7 @@ const AdminAddProduct = () => {
     "Sweaters",
     "Hoodies",
     "Shorts",
+    "Khaki"
   ];
 
   const [enteredName, setEnteredName] = useState("");
