@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
+import { useState } from "react";
 
 import classes from "./Login.module.css";
 import Input from "../../components/UI/Input";
@@ -8,10 +9,14 @@ import BlackButton from "../../components/UI/BlackButton";
 import WhiteButton from "../../components/UI/WhiteButton";
 
 const Login = () => {
+  const [isDisabled, setIsDisabled] = useState(false);
+
   const navigate = useNavigate();
 
   const loginHandler = async (event) => {
     event.preventDefault();
+
+    setIsDisabled(true);
 
     const formData = new FormData(event.target);
     const email = formData.get("email");
@@ -58,7 +63,12 @@ const Login = () => {
             <input type="checkbox" id="staySignedIn" name="staySignedIn" />
             <label htmlFor="staySignedIn">Stay signed in</label>
           </div>
-          <BlackButton type="submit">Login</BlackButton>
+          {!isDisabled && <BlackButton type="submit">Login</BlackButton>}
+          {isDisabled && (
+            <BlackButton className={classes.loginButtonDisabled}>
+              Please wait...
+            </BlackButton>
+          )}
         </div>
       </form>
       <NavLink to="/SignUp">

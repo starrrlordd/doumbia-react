@@ -115,8 +115,6 @@ export default function CartContextProvider({ children }) {
 
   const syncLocalCartWithFirestore = async (userId) => {
     const localCart = JSON.parse(localStorage.getItem("cart")) || [];
-    console.log(localCart.length);
-
 
     try {
       for (const item of localCart) {

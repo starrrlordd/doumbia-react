@@ -17,7 +17,7 @@ const OrderConfirmation = () => {
       <Card className={classes.confirmationCard}>
         <h1>Thank you for your order!</h1>
         <p>
-          You will be contacted via your information you provided to ensure safe
+          You will be contacted via your information provided to ensure safe
           and effective delivery
         </p>
 
@@ -26,7 +26,7 @@ const OrderConfirmation = () => {
             Order Number: #<strong>{orderId}</strong>{" "}
           </p>
           <p>
-            Estimated Delivery: <strong>Sat - Sunday 9am - 4pm</strong>
+            Estimated Delivery: <strong>Fri - Sat 9am - 4pm</strong>
           </p>
         </div>
 

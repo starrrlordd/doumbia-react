@@ -143,23 +143,6 @@ const Shop = () => {
     fetchProducts(true);
   }, [selectedCategory]);
 
-  // useEffect(() => {
-  //   return () => {
-  //     sessionStorage.setItem("shopScrollY", window.scrollY.toString());
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isLoading) return;
-
-  //   const savedScrollY = sessionStorage.getItem("shopScrollY");
-
-  //   requestAnimationFrame(() => {
-  //     window.scrollTo(0, savedScrollY ? Number(savedScrollY) : 0);
-  //   });
-  // }, [isLoading]);
-
-
   return (
     <div className={classes.shop}>
       <CartSlider />

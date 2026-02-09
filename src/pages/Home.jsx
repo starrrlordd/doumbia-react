@@ -52,7 +52,7 @@ const Home = () => {
             </video>
             <div className={classes.heroOverlay}></div>
             <div className={classes.heroContent}>
-              <h3>50% off on new arrivals</h3>
+              <h3>Free weekend deliveries</h3>
               <DiscoverButton />
             </div>
           </NavLink>
@@ -63,7 +63,7 @@ const Home = () => {
             <div role="banner" key={item.name} className={classes.banner}>
               <NavLink to={`/shop?category=${item.category}`}>
                 <h4>{item.name}</h4>
-                <img src={item.image} alt={item.name} />
+                <img src={item.image} alt={item.name} loading="lazy" />
                 <SeeAllButton className={classes.seeAll} />
               </NavLink>
             </div>
@@ -72,7 +72,7 @@ const Home = () => {
         <section className={classes.lbContainer}>
           <div>
             <div className={classes.lbContent}>
-              <img src={LeatherBag} alt="Leather Bags" />
+              <img src={LeatherBag} alt="Leather Bags" loading="lazy"/>
               <div className={classes.lbOverlay}></div>
               <div className={classes.lbText}>
                 <h1>Leather Bags</h1>

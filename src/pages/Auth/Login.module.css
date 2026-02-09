@@ -33,6 +33,12 @@
   gap: 5px;
 }
 
+.loginButtonDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .createAccount {
   width: 100%;
   margin: 10px 0;
