@@ -35,12 +35,6 @@ const AccountOverview = () => {
           <NavLink className={classes.ovewviewContent} to="/account/orders">
             Orders History
           </NavLink>
-          <NavLink
-            className={classes.ovewviewContent}
-            to="/account/account-settings"
-          >
-            Account Settings
-          </NavLink>
           <div
             className={classes.logout}
             onClick={() => setShowConfirm(true)}

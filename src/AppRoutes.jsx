@@ -20,7 +20,6 @@ import { Routes, Route } from "react-router-dom";
 import AccountOverview from "./pages/Account/AccountOverview";
 import ContactDetails from "./pages/Account/ContactDetails";
 import Orders from "./pages/Account/Orders";
-import AccountSettings from "./pages/Account/AccountSettings";
 import Footer from "./components/layout/Footer";
 
 const AppRoutes = () => {
@@ -31,13 +30,16 @@ const AppRoutes = () => {
       <ScrollToTop />
       <Header />
 
-       <Routes>
+      <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/payment" element={<Payment />} />
-        <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+        <Route
+          path="/order-confirmation/:orderId"
+          element={<OrderConfirmation />}
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgotten-password" element={<ForgottenPassword />} />
@@ -59,7 +61,6 @@ const AppRoutes = () => {
           />
           <Route path="contact-details" element={<ContactDetails />} />
           <Route path="orders" element={<Orders />} />
-          <Route path="account-settings" element={<AccountSettings />} />
         </Route>
       </Routes>
       <Footer />

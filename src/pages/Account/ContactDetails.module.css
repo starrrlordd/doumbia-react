@@ -9,9 +9,8 @@
   padding: 20px;
 }
 
-.contactDetails h2 {
+.contactDetailsFont {
   background-color: white;
-
   padding: 20px 20px 0 20px;
 }
 
@@ -96,6 +95,27 @@
   width: 300px;
 }
 
+.dataFullName {
+  display: flex;
+  margin: 20px 0;
+}
+
+.dataGroup {
+  width: 300px;
+  margin: 10px 0;
+}
+
+.dataEmail {
+  width: 300px;
+  margin: 20px 0;
+}
+
+.dataGroup h2{
+  margin: 10px 0;
+}
+
+
+
 @media (min-width: 0) and (max-width: 468px) {
   .card {
     padding: 1rem;
@@ -105,9 +125,9 @@
     margin: 10px 0;
   }
 
-  .contactDetails h2 {
+  /* .contactDetails h2 {
     padding: 20px 20px 0 20px;
-  }
+  } */
 
   .contactCard {
     background-color: white;

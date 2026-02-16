@@ -26,9 +26,6 @@ const AccountSidebar = ({ mobileOpen, closeMenu }) => {
         Orders History
       </NavLink>
 
-      <NavLink to="/account/account-settings" onClick={closeMenu}>
-        Account Settings
-      </NavLink>
 
       <button className={classes.logout} onClick={() => setShowConfirm(true)}>
         Logout
