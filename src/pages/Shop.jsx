@@ -9,7 +9,9 @@ import {
   startAfter,
   where,
 } from "firebase/firestore";
-import { useLocation } from "react-router-dom";
+import { auth } from "../firebase";
+import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
+import { NavLink, useLocation } from "react-router-dom";
 import { CartContext } from "../store/cart-context";
 
 import FilterBar from "../components/shop/FilterBar";
@@ -28,6 +30,8 @@ const Shop = () => {
 
   const [products, setProducts] = useState([]);
 
+  const [isVerifiedUser, setIsVerifiedUser] = useState(false);
+
   const filterBarItems = [
     "Inventory",
     "Tshirts",
@@ -41,6 +45,12 @@ const Shop = () => {
     "Shorts",
     "Khaki",
   ];
+
+  const user = auth.currentUser;
+
+  const verifiedUser = user ? user.emailVerified : false;
+
+  console.log(verifiedUser)
 
   const { cart } = useContext(CartContext);
 
@@ -143,6 +153,18 @@ const Shop = () => {
     fetchProducts(true);
   }, [selectedCategory]);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsVerifiedUser(user.emailVerified);
+      } else {
+        setIsVerifiedUser(false);
+      }
+    })
+
+    return () => unsubscribe();
+  }, [] )
+
   return (
     <div className={classes.shop}>
       <CartSlider />
@@ -154,6 +176,12 @@ const Shop = () => {
         handleCardBoxType={handleCardBoxType}
         isActive={selectedCategory}
       />
+
+      {user && !verifiedUser && (
+        <div className={classes.verifyEmail}>
+          <NavLink>Verify your email</NavLink>
+        </div>
+      )}
 
       <ProductItems
         products={products}

@@ -163,4 +163,9 @@
     margin-bottom: 10px;
     padding: 10px;
   }
+
+  .dataFullName {
+  display: flex;
+  flex-direction: column;
+}
 }

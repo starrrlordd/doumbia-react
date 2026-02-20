@@ -44,6 +44,7 @@ const Home = () => {
     <>
     <CartSlider />
       <main role="main">
+        <p>Verify your email</p>
         <section className={classes.hero}>
           <NavLink to="/shop" className={classes.heroLink}>
             <video autoPlay muted loop playsInline className={classes.heroVideo}>

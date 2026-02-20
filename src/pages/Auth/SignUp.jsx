@@ -103,6 +103,12 @@ const SignUp = () => {
 
       console.log("User created:", user.uid);
 
+      // await fetch("http://localhost:3000/welcome-email", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ email: user.email }),
+      // });
+
       setSignupSuccess(true);
     } catch (error) {
       console.error("Signup error: ", error.message);
@@ -113,9 +119,9 @@ const SignUp = () => {
   };
 
   const returnToLoginHandler = () => {
-    console.log("buttno clo")
+    console.log("buttno clo");
     navigate("/login");
-  }
+  };
 
   return (
     <div className={classes.signUp}>
@@ -189,21 +195,22 @@ const SignUp = () => {
         </form>
       </div>
 
-
       {signupSuccess && (
         <div className={classes.cardOverlay}>
-        <div className={classes.confirmSignup}>
-          <Card className={classes.verifyCard}>
-            <p>You have signed up successfully</p>
-            <p>Please return to login</p>
-            <div className={classes.returnButton}>
-            <BlackButton onClick={returnToLoginHandler}>Return to Login</BlackButton>
-            </div>
-          </Card>
+          <div className={classes.confirmSignup}>
+            <Card className={classes.verifyCard}>
+              <p>You have signed up successfully</p>
+              <p>Please return to login</p>
+              <div className={classes.returnButton}>
+                <BlackButton onClick={returnToLoginHandler}>
+                  Return to Login
+                </BlackButton>
+              </div>
+            </Card>
+          </div>
         </div>
-      </div>
-      )}            
-      
+      )}
+
       <div className={classes.haveAccount}>
         <p>Already have an account?</p>
         <span>

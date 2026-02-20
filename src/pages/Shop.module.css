@@ -82,6 +82,16 @@
   margin: 20px 0 ;
 }
 
+.verifyEmail {
+  margin: 10px;
+  text-align: center;
+}
+
+.verifyEmail a {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
 @media (min-width: 0) and (max-width: 480px) {
   .card {
     margin-top: 0;
