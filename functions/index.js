@@ -1,20 +1,32 @@
-const { setGlobalOptions } = require("firebase-functions");
-const { onRequest } = require("firebase-functions/https");
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const { Resend } = require("resend");
 
-// Firebase Admin SDK
-const { initializeApp } = require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
+admin.initializeApp();
 
-initializeApp();
+exports.sendWelcomeMessage = functions
+  .runWith({
+    secrets: ["RESEND_API_KEY"],
+  })
+  .auth.user()
+  .onCreate(async (user) => {
+    if (!user.email) return;
 
-setGlobalOptions({ maxInstances: 10 });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-exports.addmessage = onRequest(async (req, res) => {
-  const original = req.query.text;
+    try {
+      await resend.emails.send({
+        from: "Doumbia <onboarding@resend.dev>",
+        to: user.email,
+        subject: "Welcome to Doumbia 🎉",
+        html: `
+          <h1>Welcome 🎉</h1>
+          <p>Thanks for joining Doumbia — we're happy to have you.</p>
+        `,
+      });
 
-  const writeResult = await getFirestore()
-    .collection("messages")
-    .add({ original });
-
-  res.json({ result: `Message with ID: ${writeResult.id} added.` });
-});
+      console.log("Welcome email sent to:", user.email);
+    } catch (error) {
+      console.error("Failed to send welcome email:", error);
+    }
+  });
