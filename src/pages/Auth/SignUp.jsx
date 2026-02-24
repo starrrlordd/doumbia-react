@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../../firebase";
 
@@ -14,11 +15,15 @@ import classes from "./SignUp.module.css";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
 const SignUp = () => {
   const navigate = useNavigate();
 
   const [signupData, setSignupData] = useState({
     email: "",
+    firstname: "",
     phone: "",
     password: "",
     confirmPassword: "",
@@ -29,11 +34,24 @@ const SignUp = () => {
 
   const [signupSuccess, setSignupSuccess] = useState(false);
 
+  const [isVisible, setIsVisible] = useState(false);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+
   const inputChangeHandler = (event) => {
     setSignupData({
       ...signupData,
       [event.target.name]: event.target.value,
     });
+  };
+
+  const togglePasswordVisibility = (event) => {
+    event.preventDefault();
+    setIsVisible((prev) => !prev);
+  };
+
+  const toggleConfirmPasswordVisibility = (event) => {
+    event.preventDefault();
+    setIsConfirmVisible((prev) => !prev);
   };
 
   const validateSignup = (data) => {
@@ -45,12 +63,14 @@ const SignUp = () => {
       errors.email = "Invalid email address";
     }
 
+    if (!data.firstname) {
+      errors.firstname = "Name is required";
+    }
+
     if (!data.phone) {
       errors.phone = "Phone number is required";
-    } else if (data.phone.length < 10) {
-      errors.phone = "Phone must be at least 10 digits";
-    } else if (data.phone.length > 10) {
-      errors.phone = "Phone must not be more than 10 digits";
+    } else if (data.phone.length !== 10) {
+      errors.phone = "Phone number must be exactly 10 digits";
     }
 
     if (!data.password) {
@@ -82,7 +102,7 @@ const SignUp = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       setIsDisabled(false);
-      return; // Stop execution if there are validation errors
+      return; 
     }
 
     try {
@@ -96,6 +116,7 @@ const SignUp = () => {
 
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
+        firstname: signupData.firstname,
         phone: signupData.phone || null,
         createdAt: serverTimestamp(),
         emailVerified: false,
@@ -103,13 +124,11 @@ const SignUp = () => {
 
       console.log("User created:", user.uid);
 
-      // await fetch("http://localhost:3000/welcome-email", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ email: user.email }),
-      // });
-
       setSignupSuccess(true);
+
+      updateProfile(user, {
+        displayName: signupData.firstname,
+      });
     } catch (error) {
       console.error("Signup error: ", error.message);
       setErrors({ general: error.message });
@@ -119,7 +138,6 @@ const SignUp = () => {
   };
 
   const returnToLoginHandler = () => {
-    console.log("buttno clo");
     navigate("/login");
   };
 
@@ -139,6 +157,18 @@ const SignUp = () => {
             className={classes.inputInput}
           />
           {errors.email && <p className={classes.error}>{errors.email}</p>}
+          <label htmlFor="firstname"></label>
+          <Input
+            placeholder="Firstname"
+            name="firstname"
+            type="text"
+            value={signupData.firstname}
+            onChange={inputChangeHandler}
+            className={classes.inputInput}
+          />
+          {errors.firstname && (
+            <p className={classes.error}>{errors.firstname}</p>
+          )}
 
           <label htmlFor="phone"></label>
           <Input
@@ -152,25 +182,45 @@ const SignUp = () => {
           {errors.phone && <p className={classes.error}>{errors.phone}</p>}
 
           <label htmlFor="password"></label>
-          <Input
-            placeholder="Password"
-            name="password"
-            type="password"
-            value={signupData.password}
-            onChange={inputChangeHandler}
-            className={classes.inputInput}
-          />
+          <div className={classes.passwordWrap}>
+            <Input
+              placeholder="Password"
+              name="password"
+              type={isVisible ? "text" : "password"}
+              value={signupData.password}
+              onChange={inputChangeHandler}
+              className={classes.inputInput}
+            />
+
+            <button
+              className={classes.showPasswordInside}
+              onClick={togglePasswordVisibility}
+              aria-label="Toggle password visibility"
+            >
+              <FontAwesomeIcon icon={isVisible ? faEyeSlash : faEye} />
+            </button>
+          </div>
+
           {errors.password && (
             <p className={classes.error}>{errors.password}</p>
           )}
-          <Input
-            placeholder="Confirm Password"
-            name="confirmPassword"
-            type="password"
-            value={signupData.confirmPassword}
-            onChange={inputChangeHandler}
-            className={classes.inputInput}
-          />
+          <div className={classes.passwordWrap}>
+            <Input
+              placeholder="Confirm Password"
+              name="confirmPassword"
+              type={isConfirmVisible ? "text" : "password"}
+              value={signupData.confirmPassword}
+              onChange={inputChangeHandler}
+              className={classes.inputInput}
+            />
+            <button
+              className={classes.showPasswordInside}
+              onClick={toggleConfirmPasswordVisibility}
+              aria-label="Toggle password visibility"
+            >
+              <FontAwesomeIcon icon={isConfirmVisible ? faEyeSlash : faEye} />
+            </button>
+          </div>
           {errors.confirmPassword && (
             <p className={classes.error}>{errors.confirmPassword}</p>
           )}
@@ -180,18 +230,12 @@ const SignUp = () => {
             purchase, plus personalized offers, news and the latest trends
           </label>
 
-          {!isDisabled && (
-            <BlackButton className={classes.createAccount}>
-              Create account
-            </BlackButton>
-          )}
-          {isDisabled && (
-            <BlackButton
-              className={`${classes.createAccount} ${classes.createAccountDisabled}`}
-            >
-              Please wait...
-            </BlackButton>
-          )}
+          <BlackButton
+            className={`${classes.createAccount} ${isDisabled ? classes.createAccountDisabled : ""}`}
+            disabled={isDisabled}
+          >
+            {isDisabled ? "Please wait..." : "Create Account"}
+          </BlackButton>
         </form>
       </div>
 

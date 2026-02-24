@@ -54,6 +54,28 @@
   text-underline-offset: 2px;
 }
 
+.passwordWrap {
+  position: relative;
+
+  align-items: center;
+}
+
+.inputInput {
+  width: 100%;
+  padding-right: 5px;
+}
+
+.showPasswordInside {
+  position: absolute;
+  top: 40%;
+  right: 10px;
+  transform: translate(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  
+}
+
 @media (min-width: 0) and (max-width: 480px) {
   .login {
     padding: 0 20px;

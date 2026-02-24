@@ -12,8 +12,12 @@ import hamburgerIcon from "../../assets/images/icons/hamburger.svg";
 import { WindowSizeContext } from "../../store/windowSize-context";
 import { AuthContext } from "../../store/auth-context";
 
+import { auth } from "../../firebase";
+
 const Header = () => {
-  const { isAuthenticated, user } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
+
+  const user = auth.currentUser;
 
   const { isMobileSize } = useContext(WindowSizeContext);
 
@@ -80,7 +84,7 @@ const Header = () => {
               }
             >
               <img src={profileIcon} alt="profile" className={classes.icon} />
-              <span className={classes.text}>{user?.email.split("@")[0]}</span>
+              <span className={classes.text}>{user?.displayName}</span>
             </NavLink>
           )}
 

@@ -50,7 +50,7 @@ const Shop = () => {
 
   const verifiedUser = user ? user.emailVerified : false;
 
-  console.log(verifiedUser)
+  
 
   const { cart } = useContext(CartContext);
 

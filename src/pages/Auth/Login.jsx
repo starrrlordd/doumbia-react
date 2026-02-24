@@ -8,10 +8,20 @@ import Input from "../../components/UI/Input";
 import BlackButton from "../../components/UI/BlackButton";
 import WhiteButton from "../../components/UI/WhiteButton";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
 const Login = () => {
   const [isDisabled, setIsDisabled] = useState(false);
 
+  const [isVisible, setIsVisible] = useState(false);
+
   const navigate = useNavigate();
+
+  const togglePasswordVisibility = (event) => {
+    event.preventDefault();
+    setIsVisible((prev) => !prev);
+  };
 
   const loginHandler = async (event) => {
     event.preventDefault();
@@ -47,22 +57,28 @@ const Login = () => {
             required
           />
         </div>
-        <div>
+        <div className={classes.passwordWrap}>
           <label htmlFor="password" />
           <Input
-            className={classes.inputText}
+            className={`${classes.inputText} ${classes.inputInput}`}
             placeholder="Password"
-            type="password"
-            id="password"
+            type={isVisible ? "text" : "password"}
             name="password"
             required
           />
+          <button
+            className={classes.showPasswordInside}
+            onClick={togglePasswordVisibility}
+            aria-label="Toggle password visibility"
+          >
+            <FontAwesomeIcon icon={isVisible ? faEyeSlash : faEye} />
+          </button>
         </div>
         <div className={classes.actions}>
-          <div className={classes.staySignedIn}>
+          {/* <div className={classes.staySignedIn}>
             <input type="checkbox" id="staySignedIn" name="staySignedIn" />
             <label htmlFor="staySignedIn">Stay signed in</label>
-          </div>
+          </div> */}
           {!isDisabled && <BlackButton type="submit">Login</BlackButton>}
           {isDisabled && (
             <BlackButton className={classes.loginButtonDisabled}>
