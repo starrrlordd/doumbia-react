@@ -123,8 +123,6 @@ const Checkout = () => {
     fetchContactDetails();
   }, [user]);
 
-  console.log(userDetails);
-
   return (
     <div className={classes.checkout}>
       <Card className={classes.deliveryMethod}>

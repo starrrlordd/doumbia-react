@@ -135,7 +135,7 @@ const Header = () => {
           )}
           {isAuthenticated && (
             <NavLink to="/account" onClick={toggleMenu}>
-              {user?.email.split("@")[0]}
+              {user?.displayName}
             </NavLink>
           )}
 

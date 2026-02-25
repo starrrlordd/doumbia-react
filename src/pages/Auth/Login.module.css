@@ -76,6 +76,16 @@
   
 }
 
+.error {
+  text-align: center;
+  color: red;
+  padding: 5px;
+}
+
+.inputError {
+  border: 1px solid red;
+}
+
 @media (min-width: 0) and (max-width: 480px) {
   .login {
     padding: 0 20px;
