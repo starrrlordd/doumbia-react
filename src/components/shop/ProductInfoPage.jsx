@@ -9,8 +9,6 @@ import CartSlider from "../UI/CartSlider";
 const ProductInfoPage = () => {
   const location = useLocation();
 
-  console.log(location)
-
   const { id } = useParams();
 
   const [product, setProduct] = useState(null);

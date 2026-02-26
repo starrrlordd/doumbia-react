@@ -122,8 +122,6 @@ const SignUp = () => {
         emailVerified: false,
       });
 
-      console.log("User created:", user.uid);
-
       setSignupSuccess(true);
 
       updateProfile(user, {

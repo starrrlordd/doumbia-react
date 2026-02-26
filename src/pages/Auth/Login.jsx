@@ -41,7 +41,6 @@ const Login = () => {
 
     const formData = new FormData(event.target);
     const email = formData.get("email");
-    console.log(email);
     const password = formData.get("password");
 
     try {

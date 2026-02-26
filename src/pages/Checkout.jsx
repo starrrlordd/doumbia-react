@@ -83,8 +83,6 @@ const Checkout = () => {
       delivery,
     };
 
-    console.log(userDelivery);
-
     try {
       const deliveryRef = doc(db, "users", user.uid, "userDelivery", "details");
 

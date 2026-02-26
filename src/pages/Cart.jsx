@@ -15,8 +15,6 @@ import { auth } from "../firebase";
 const Cart = () => {
   const { cart: ctxCartItems, clearCart } = useContext(CartContext);
 
-  console.log(ctxCartItems.length);
-
   const navigate = useNavigate();
 
   const proceedToCheckoutHandler = () => {

@@ -19,7 +19,6 @@ const AccountOverview = () => {
     logout();
     navigate("/shop");
     setShowConfirm(false);
-    console.log("logout button clicked");
   };
 
   return (

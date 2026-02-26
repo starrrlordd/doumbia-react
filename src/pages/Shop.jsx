@@ -65,10 +65,8 @@ const Shop = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleGridChange = (num) => {
-    console.log(num);
     setGridColumns(num);
     setCardBox(`card${num}`);
-    console.log(cardBox);
   };
 
   const handleCardBoxType = () => {
@@ -77,7 +75,6 @@ const Shop = () => {
 
   const onFilterSelect = (item) => {
     setSelectedCategory(item);
-    console.log(`${item} is active`);
   };
 
   const { search } = useLocation();

@@ -38,7 +38,6 @@ const Payment = () => {
 
   const choosePaymentHandler = (event) => {
     setPayment(event.target.value);
-    console.log(payment);
 
     const paymentMethod = payment;
 
@@ -47,7 +46,6 @@ const Payment = () => {
     } else if (paymentMethod == "cash") {
       setShowButton(true);
     }
-    console.log(paymentMethod);
   };
 
   const confirmOrderHandler = async () => {
@@ -56,21 +54,16 @@ const Payment = () => {
     const deliveryRef = doc(db, "users", user.uid, "userDelivery", "details");
     const deliverySnapshot = await getDoc(deliveryRef);
 
-    console.log(deliverySnapshot.data());
-
     const cartRef = collection(db, "users", user.uid, "cart");
     const cartSnapshot = await getDocs(cartRef);
 
     const totalCartAmount = cartSnapshot.docs.reduce((sum, doc) => {
       const item = doc.data();
-      console.log(item);
       return sum + item.price * item.quantity;
     }, 0);
-    console.log(totalCartAmount);
 
     const deliveryDetails = deliverySnapshot.data();
     const deliveryFee = parseFloat(deliveryDetails.delivery);
-    console.log(deliveryFee);
 
     const totalAmount = totalCartAmount + deliveryFee;
 
@@ -94,8 +87,6 @@ const Payment = () => {
       const ordersRef = collection(db, "users", user.uid, "orders");
       const orderDoc = await addDoc(ordersRef, orderData);
 
-      console.log("Order Created: ", orderDoc.id);
-      console.log(totalAmount);
       navigate(`/order-confirmation/${orderDoc.id}`);
     } catch (error) {
       console.error("Order failed: ", error);

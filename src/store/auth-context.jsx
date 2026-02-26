@@ -26,7 +26,6 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = async () => {
-    console.log("logout button clicked");
     await signOut(auth);
     setUser(null);
   }

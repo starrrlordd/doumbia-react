@@ -10,8 +10,6 @@ const OrderConfirmation = () => {
 
   const {orderId} = useParams();
 
-  console.log(orderId);
-
   return (
     <div className={classes.orderConfirmation}>
       <Card className={classes.confirmationCard}>

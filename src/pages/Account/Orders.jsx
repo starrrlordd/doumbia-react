@@ -38,8 +38,6 @@ const Orders = () => {
     }
   }, [user?.uid]);
 
-  console.log(loadedOrders);
-
   return (
     <div className={classes.card}>
       <div className={classes.ordersHeader}>

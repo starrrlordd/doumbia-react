@@ -24,7 +24,6 @@ const Contact = () => {
 
   const submitUserForm = (event) => {
     event.preventDefault();
-    console.log(formData);
     setFormData(initialState);
   };
 

@@ -10,8 +10,6 @@ const CartItem = () => {
 
   const cartItems = cart;
 
-  console.log(cartItems);
-
   return (
     <ul className={classes.cartItem}>
       {cartItems.map((item) => (
