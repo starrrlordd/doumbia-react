@@ -36,12 +36,8 @@ const Shop = () => {
     "Inventory",
     "Tshirts",
     "Jeans",
-    "Shirts",
     "Joggers",
     "Cargos",
-    "Sleeveless",
-    "Sweaters",
-    "Hoodies",
     "Shorts",
     "Khaki",
   ];

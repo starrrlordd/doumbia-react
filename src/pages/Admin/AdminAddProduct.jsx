@@ -16,70 +16,58 @@ const AdminAddProduct = () => {
     "Sweaters",
     "Hoodies",
     "Shorts",
-    "Khaki"
+    "Khaki",
   ];
 
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredPrice, setEnteredPrice] = useState("");
-  const [enteredCategory, setEnteredCategory] = useState("");
-  const [imageURL, setImageURL] = useState("");
-  const [enteredStock, setEnteredStock] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    stock: "",
+    category: "",
+    image: "",
+  });
 
-  const nameChangeHandler = (event) => {
-    setEnteredName(event.target.value);
-  };
-
-  const priceChangeHandler = (event) => {
-    setEnteredPrice(event.target.value);
-  };
-
-  const categoryChangeHandler = (event) => {
-    setEnteredCategory(event.target.value);
-  };
-
-  const imageURLChangeHandler = (event) => {
-    setImageURL(event.target.value);
-  };
-
-  const stockChangeHandler = (event) => {
-    setEnteredStock(event.target.value);
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const formSubmitHandler = async (event) => {
     event.preventDefault();
 
-    const productData = {
-      name: enteredName,
-      price: Number(enteredPrice),
-      stock: Number(enteredStock),
-      category: enteredCategory,
-      image: imageURL,
-      createdAt: serverTimestamp(),
-    };
+    const { name, price, stock, category, image } = formData;
 
-    if (
-      !enteredName ||
-      !enteredPrice ||
-      !enteredStock ||
-      !enteredCategory ||
-      !imageURL
-    ) {
-      alert("Fill all input fields");
+    if (!name || !price || !stock || !category || !image) {
+      alert("Please fill in all fields.");
       return;
     }
 
+    const productData = {
+      name,
+      price: Number(price),
+      stock: Number(stock),
+      category,
+      image,
+      createdAt: serverTimestamp(),
+    };
+
     try {
       await addDoc(collection(db, "products"), productData);
-      alert("Product added to database");
+      alert("Product added successfully!");
 
-      setEnteredName("");
-      setEnteredPrice("");
-      setEnteredStock("");
-      setEnteredCategory("");
-      setImageURL("");
+      setFormData({
+        name: "",
+        price: "",
+        stock: "",
+        category: "",
+        image: "",
+      });
     } catch (error) {
-      console.error("There was an error adding product to database: ", error);
-      alert("Failed to add product to database");
+      console.error("Error adding product:", error);
+      alert("Failed to add product. Please try again.");
     }
   };
 
@@ -88,40 +76,44 @@ const AdminAddProduct = () => {
       <h1>Add Products (Admin)</h1>
 
       <form className={classes.form} onSubmit={formSubmitHandler}>
-        <label htmlFor="enterName">Product Name</label>
+        <label htmlFor="name">Product Name</label>
         <input
-          id="enterName"
+          id="name"
+          name="name"
           type="text"
           placeholder="Enter Product Name"
-          value={enteredName}
-          onChange={nameChangeHandler}
+          value={formData.name}
+          onChange={handleInputChange}
         />
 
-        <label htmlFor="enterPrice">Product Price</label>
+        <label htmlFor="price">Product Price</label>
         <input
-          id="enterPrice"
+          id="price"
+          name="price"
           type="number"
           placeholder="Enter Product Price"
-          value={enteredPrice}
-          onChange={priceChangeHandler}
+          value={formData.price}
+          onChange={handleInputChange}
         />
 
-        <label htmlFor="enterStock">Product stock</label>
+        <label htmlFor="stock">Product Stock</label>
         <input
-          id="enterStock"
+          id="stock"
+          name="stock"
           type="number"
-          placeholder="Enter stock quantity"
-          value={enteredStock}
-          onChange={stockChangeHandler}
+          placeholder="Enter Stock Quantity"
+          value={formData.stock}
+          onChange={handleInputChange}
         />
 
-        <label htmlFor="selectCategory">Product Category</label>
+        <label htmlFor="category">Product Category</label>
         <select
-          id="selectCategory"
-          value={enteredCategory}
-          onChange={categoryChangeHandler}
+          id="category"
+          name="category"
+          value={formData.category}
+          onChange={handleInputChange}
         >
-          <option>Choose an option</option>
+          <option value="">Choose an option</option>
           {categoryOptions.map((category, index) => (
             <option key={index} value={category}>
               {category}
@@ -129,13 +121,14 @@ const AdminAddProduct = () => {
           ))}
         </select>
 
-        <label htmlFor="productImage">Image URL</label>
+        <label htmlFor="image">Image URL</label>
         <input
-          id="productImage"
+          id="image"
+          name="image"
           type="text"
           placeholder="Enter Image URL"
-          value={imageURL}
-          onChange={imageURLChangeHandler}
+          value={formData.image}
+          onChange={handleInputChange}
         />
 
         <BlackButton type="submit">Add Product</BlackButton>

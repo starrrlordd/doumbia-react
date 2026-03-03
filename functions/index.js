@@ -30,3 +30,78 @@ exports.sendWelcomeMessage = functions
       console.error("Failed to send welcome email:", error);
     }
   });
+
+const axios = require("axios");
+const cors = require("cors")({ origin: true });
+
+exports.initializePayment = functions
+  .runWith({ secrets: ["PAYSTACK_SECRET"] })
+  .https.onRequest((req, res) => {
+    cors(req, res, async () => {
+      try {
+        const { email, cartItems, userId } = req.body;
+
+        const totalAmount = cartItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+
+        const secret = process.env.PAYSTACK_SECRET;
+
+        const response = await axios.post(
+          "https://api.paystack.co/transaction/initialize",
+          {
+            email,
+            amount: totalAmount * 100,
+            currency: "GHS",
+            metadata: {
+              userId,
+              cartItems,
+            },
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${secret}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        res.json(response.data);
+      } catch (error) {
+        console.error("Error initializing payment:", error.response?.data || error.message);
+        res.status(500).json({ error: "Payment initialization failed" });
+      }
+    });
+  });
+
+exports.verifyPayment = functions
+  .runWith({ secrets: ["PAYSTACK_SECRET"] })
+  .https.onRequest((req, res) => {
+    cors(req, res, async () => {
+      const { reference } = req.body;
+
+      const secret = process.env.PAYSTACK_SECRET;
+
+      try {
+        const response = await axios.get(
+          `https://api.paystack.co/transaction/verify/${reference}`,
+          {
+            headers: {
+              Authorization: `Bearer ${secret}`,
+            },
+          },
+        );
+
+        const paymentData = response.data.data;
+
+        if (paymentData.status === "success") {
+          res.json({ success: true, paymentData });
+        } else {
+          res.json({ success: false });
+        }
+      } catch (error) {
+        res.status(500).json({ error: "Verification failed" });
+      }
+    });
+  });

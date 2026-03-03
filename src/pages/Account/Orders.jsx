@@ -38,6 +38,7 @@ const Orders = () => {
     }
   }, [user?.uid]);
 
+
   return (
     <div className={classes.card}>
       <div className={classes.ordersHeader}>
@@ -57,7 +58,7 @@ const Orders = () => {
             <p className={classes.orderDate}>
               {orderItem.createdAt.toDate().toLocaleDateString()}
             </p>
-            <p className={classes.orderStatusPending}>Pending</p>
+            <p className={classes.orderStatusPending}>{orderItem.orderStatus}</p>
           </div>
           <WhiteButton
             className={classes.orderItemButton}

@@ -2,15 +2,10 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../store/cart-context";
 
+import { usePaystackPayment } from "react-paystack";
+
 import { auth, db } from "../firebase";
-import {
-  collection,
-  doc,
-  getDoc,
-  addDoc,
-  Timestamp,
-  getDocs,
-} from "firebase/firestore";
+import { collection, doc, getDoc, addDoc, Timestamp } from "firebase/firestore";
 
 import Card from "../components/UI/Card";
 import WhiteButton from "../components/UI/WhiteButton";
@@ -27,71 +22,114 @@ import mtn from "../assets/images/icons/mtn.jpeg";
 import telecel from "../assets/images/icons/telecel.jpg";
 import airtelTigo from "../assets/images/icons/airtelTigo.png";
 
+const PAYMENT_METHODS = {
+  PAYSTACK: "paystack",
+  CASH: "cash",
+};
+
 const Payment = () => {
-  const [payment, setPayment] = useState("cash");
-  const [showButton, setShowButton] = useState(false);
+  const [payment, setPayment] = useState("paystack");
   const { cart, clearCart } = useContext(CartContext);
-
   const navigate = useNavigate();
-
   const user = auth.currentUser;
+
+  const totalCartAmount = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
 
   const choosePaymentHandler = (event) => {
     setPayment(event.target.value);
+  };
 
-    const paymentMethod = payment;
+  const saveOrderToFirebase = async (paymentStatus, reference = "CASH") => {
+    try {
+      if (!user) throw new Error("User not authenticated");
 
-    if (paymentMethod == "unavailable") {
-      setShowButton(false);
-    } else if (paymentMethod == "cash") {
-      setShowButton(true);
+      const deliveryRef = doc(db, "users", user.uid, "userDelivery", "details");
+      const deliverySnapshot = await getDoc(deliveryRef);
+
+      if (!deliverySnapshot.exists()) {
+        throw new Error("Delivery details not found");
+      }
+
+      const deliveryDetails = deliverySnapshot.data();
+      const deliveryFee = parseFloat(deliveryDetails.delivery);
+      const totalAmount = totalCartAmount + deliveryFee;
+
+      const orderData = {
+        items: cart,
+        delivery: { ...deliveryDetails, fees: deliveryFee },
+        totalAmount,
+        paymentMethod: payment,
+        paymentStatus: paymentStatus,
+        orderStatus: "pending",
+        reference: reference,
+        createdAt: Timestamp.now(),
+      };
+
+      const ordersRef = collection(db, "users", user.uid, "orders");
+      const orderDoc = await addDoc(ordersRef, orderData);
+
+      clearCart();
+      navigate(`/order-confirmation/${orderDoc.id}`);
+    } catch (error) {
+      console.error("Order failed: ", error);
+      alert("Something went wrong saving your order");
     }
   };
 
   const confirmOrderHandler = async () => {
-    if (!user || cart.length === 0) return;
-
-    const deliveryRef = doc(db, "users", user.uid, "userDelivery", "details");
-    const deliverySnapshot = await getDoc(deliveryRef);
-
-    const cartRef = collection(db, "users", user.uid, "cart");
-    const cartSnapshot = await getDocs(cartRef);
-
-    const totalCartAmount = cartSnapshot.docs.reduce((sum, doc) => {
-      const item = doc.data();
-      return sum + item.price * item.quantity;
-    }, 0);
-
-    const deliveryDetails = deliverySnapshot.data();
-    const deliveryFee = parseFloat(deliveryDetails.delivery);
-
-    const totalAmount = totalCartAmount + deliveryFee;
-
-    const orderData = {
-      items: cart,
-      delivery: {
-        name: deliveryDetails.name,
-        surname: deliveryDetails.surname,
-        email: deliveryDetails.email,
-        phone: deliveryDetails.phone,
-        region: deliveryDetails.region,
-        city: deliveryDetails.city,
-        fees: deliveryFee,
-      },
-      totalAmount,
-      status: "pending",
-      createdAt: Timestamp.now(),
-    };
-
-    try {
-      const ordersRef = collection(db, "users", user.uid, "orders");
-      const orderDoc = await addDoc(ordersRef, orderData);
-
-      navigate(`/order-confirmation/${orderDoc.id}`);
-    } catch (error) {
-      console.error("Order failed: ", error);
+    if (!user) {
+      alert("You must be logged in to place an order");
+      return;
     }
-    clearCart();
+
+    if (cart.length === 0) {
+      alert("Your cart is empty");
+      return;
+    }
+
+    if (payment === PAYMENT_METHODS.PAYSTACK) {
+      try {
+        const deliveryRef = doc(
+          db,
+          "users",
+          user.uid,
+          "userDelivery",
+          "details",
+        );
+        const deliverySnapshot = await getDoc(deliveryRef);
+
+        if (!deliverySnapshot.exists()) {
+          throw new Error("Delivery details not found");
+        }
+
+        const deliveryFee = parseFloat(deliverySnapshot.data().delivery);
+        const finalTotal = (totalCartAmount + deliveryFee) * 100;
+
+        const config = {
+          reference: new Date().getTime().toString(),
+          email: user.email,
+          amount: finalTotal,
+          publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+          currency: "GHS",
+        };
+
+        const initializePayment = usePaystackPayment(config);
+
+        initializePayment(
+          (reference) => saveOrderToFirebase("paid", reference.reference),
+          () => console.log("Payment closed"),
+        );
+        saveOrderToFirebase("success");
+      } catch (error) {
+        console.error("Payment initialization failed: ", error.message);
+        alert("Failed to initialize payment. Please try again");
+      }
+    } else {
+      saveOrderToFirebase("pending");
+    }
   };
 
   return (
@@ -109,20 +147,19 @@ const Payment = () => {
           <div className={classes.paymentInput}>
             <input
               type="radio"
-              name="soon"
-              value="unavailable"
-              id="unavailable"
-              checked={payment === "unavailable"}
+              name="payment"
+              value={PAYMENT_METHODS.PAYSTACK}
+              id="paystack"
+              checked={payment === PAYMENT_METHODS.PAYSTACK}
               onChange={choosePaymentHandler}
             />
             <label htmlFor="soon">
               <div className={classes.iconImage}>
-                <img src={visa} />
-                <img src={mastercard} />
-                <img src={mtn} />
-                <img src={telecel} />
-                <img src={airtelTigo} />
-                <p>(Coming soon)</p>
+                <img src={visa} alt="Visa" />
+                <img src={mastercard} alt="Mastercard" />
+                <img src={mtn} alt="MTN" />
+                <img src={telecel} alt="Telecel" />
+                <img src={airtelTigo} alt="AirtelTigo" />
               </div>
             </label>
           </div>
@@ -130,11 +167,11 @@ const Payment = () => {
           <div className={classes.paymentInput}>
             <input
               type="radio"
-              name="cash"
-              value="cash"
+              name="payment"
+              value={PAYMENT_METHODS.CASH}
               id="cash"
               onChange={choosePaymentHandler}
-              checked={payment === "cash"}
+              checked={payment === PAYMENT_METHODS.CASH}
             />
             <label htmlFor="cash">Cash on delivery</label>
           </div>
@@ -142,8 +179,8 @@ const Payment = () => {
         <div className={classes.confirmOrderButton}>
           <WhiteButton onClick={() => navigate("/checkout")}>Back</WhiteButton>
 
-          <BlackButton onClick={confirmOrderHandler} disabled={showButton}>
-            Confirm your order
+          <BlackButton onClick={confirmOrderHandler}>
+            {payment === PAYMENT_METHODS.PAYSTACK ? "Pay Now" : "Confirm Order"}
           </BlackButton>
         </div>
       </Card>

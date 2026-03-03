@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { auth } from "../firebase";
 import { db } from "../firebase";
-import { collection, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 import Card from "../components/UI/Card";
 import Input from "../components/UI/Input";
@@ -17,58 +17,76 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const Checkout = () => {
   const { cart, total: subtotal } = useContext(CartContext);
-
-  const [delivery, setDelivery] = useState("0");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [region, setRegion] = useState("Greater Accra");
-  const [city, setCity] = useState("");
-
-  const [userDetails, setUserDetails] = useState([]);
-
-  const nameChangeHandler = (event) => {
-    setName(event.target.value);
-  };
-
-  const surnameChangeHandler = (event) => {
-    setSurname(event.target.value);
-  };
-
-  const emailChangeHandler = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const phoneChangeHandler = (event) => {
-    setPhone(event.target.value);
-  };
-
-  const regionChangeHandler = (event) => {
-    setRegion(event.target.value);
-  };
-
-  const deliveryChangeHandler = (event) => {
-    setDelivery(event.target.value);
-  };
-
-  const cityChangleHandler = (event) => {
-    setCity(event.target.value);
-  };
-
-  const total = parseFloat(subtotal) + parseFloat(delivery);
-
   const navigate = useNavigate();
-
   const user = auth.currentUser;
 
-  const checkoutSubmissionHandler = async (event) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    phone: "",
+    region: "Greater Accra",
+    city: "",
+    delivery: "0",
+  });
+
+  const total = parseFloat(subtotal) + parseFloat(formData.delivery);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchDeliveryDetails = async () => {
+      if (!user) return;
+
+      try {
+        const detailsRef = doc(
+          db,
+          "users",
+          user.uid,
+          "userDelivery",
+          "details",
+        );
+        const detailsSnapshot = await getDoc(detailsRef);
+
+        if (detailsSnapshot.exists()) {
+          const userDetails = detailsSnapshot.data();
+
+          setFormData({
+            name: userDetails.name || "",
+            surname: userDetails.surname || "",
+            email: userDetails.email || "",
+            phone: userDetails.phone || "",
+            region: userDetails.region || "Greater Accra",
+            city: userDetails.city || "",
+            delivery: userDetails.delivery || "0",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch delivery details: ", error);
+      }
+    };
+
+    fetchDeliveryDetails();
+  }, [user]);
+
+  const handleChekoutSubmission = async (event) => {
     event.preventDefault();
 
-    if (cart.length < 1) return;
+    if (cart.length < 1) {
+      alert("Your cart is empty");
+      return;
+    }
+
+    const { name, surname, email, phone, region, city, delivery } = formData;
 
     if (!name || !surname || !email || !phone || !region || !city) {
-      alert("Fill all input fields");
+      alert("Please fill in all required fields");
       return;
     }
 
@@ -79,47 +97,19 @@ const Checkout = () => {
       phone,
       region,
       city,
-      createdAt: new Date(),
       delivery,
+      createdAt: new Date(),
     };
 
     try {
       const deliveryRef = doc(db, "users", user.uid, "userDelivery", "details");
-
       await setDoc(deliveryRef, userDelivery);
-
       navigate("/Payment");
     } catch (error) {
-      console.error("Couldn't save delivery", error);
+      console.error("Failed to save delivery details", error);
+      alert("Failed to save delivery details. Please try again");
     }
   };
-
-  useEffect(() => {
-    const fetchContactDetails = async () => {
-      if (!user) return;
-
-      try {
-        const detailsRef = doc(db, "users", user.uid, "userDelivery", "details");
-        const detailsSnapshot = await getDoc(detailsRef);
-
-        if (detailsSnapshot.exists()) {
-          const userDetails = detailsSnapshot.data();
-
-          setName(userDetails.name || "");
-          setSurname(userDetails.surname || "");
-          setEmail(userDetails.email || "");
-          setPhone(userDetails.phone || "");
-          setRegion(userDetails.region || "Greater Accra");
-          setCity(userDetails.city || "");
-          setDelivery(userDetails.delivery || "0");
-        }
-      } catch (error) {
-        console.error("Failed to fetch contact details: ", error);
-      }
-    };
-
-    fetchContactDetails();
-  }, [user]);
 
   return (
     <div className={classes.checkout}>
@@ -134,16 +124,15 @@ const Checkout = () => {
         </div>
         <h3 className={classes.address}>Delivery Method</h3>
 
-        <form onSubmit={checkoutSubmissionHandler}>
+        <form onSubmit={handleChekoutSubmission}>
           <div className={classes.method}>
             <input
               type="radio"
               name="delivery"
               value="25"
-              checked={delivery === "25"}
-              onChange={deliveryChangeHandler}
+              checked={formData.delivery === "25"}
+              onChange={handleInputChange}
               id="express"
-              autoComplete=""
             />
             <label htmlFor="express">Express Delivery - ¢25.00</label>
           </div>
@@ -152,8 +141,8 @@ const Checkout = () => {
               type="radio"
               name="delivery"
               value="0"
-              checked={delivery === "0"}
-              onChange={deliveryChangeHandler}
+              checked={formData.delivery === "0"}
+              onChange={handleInputChange}
               id="weekend"
             />
             <label htmlFor="weekend">Weekend Delivery - Free</label>
@@ -165,8 +154,8 @@ const Checkout = () => {
               type="text"
               placeholder="Name"
               id="name"
-              value={name}
-              onChange={nameChangeHandler}
+              value={formData.name}
+              onChange={handleInputChange}
               required
               autoComplete="name"
             />
@@ -174,8 +163,8 @@ const Checkout = () => {
               type="text"
               placeholder="Surname"
               id="surname"
-              value={surname}
-              onChange={surnameChangeHandler}
+              value={formData.surname}
+              onChange={handleInputChange}
               required
               autoComplete="surnname"
             />
@@ -183,8 +172,8 @@ const Checkout = () => {
               type="email"
               placeholder="Email"
               id="email"
-              value={email}
-              onChange={emailChangeHandler}
+              value={formData.email}
+              onChange={handleInputChange}
               required
               autoComplete="email"
             />
@@ -192,8 +181,8 @@ const Checkout = () => {
               type="phone"
               placeholder="Phone Number"
               id="phone"
-              value={phone}
-              onChange={phoneChangeHandler}
+              value={formData.phone}
+              onChange={handleInputChange}
               required
               autoComplete="tel"
             />
@@ -201,8 +190,8 @@ const Checkout = () => {
             <select
               className={classes.region}
               id="region"
-              value={region}
-              onChange={regionChangeHandler}
+              value={formData.region}
+              onChange={handleInputChange}
               required
               autoComplete="address-level1"
             >
@@ -216,8 +205,8 @@ const Checkout = () => {
               type="text"
               placeholder="City/ Town "
               id="city"
-              value={city}
-              onChange={cityChangleHandler}
+              value={formData.city}
+              onChange={handleInputChange}
               required
               autoComplete="address-level2"
             />
@@ -238,17 +227,17 @@ const Checkout = () => {
           </div>
 
           <p className={classes.bagInfo} style={{ marginTop: "30px" }}>
-            Subtotal <span>¢{subtotal}</span>{" "}
+            Subtotal <span>¢{subtotal.toFixed(2)}</span>{" "}
           </p>
           <p className={classes.bagInfo}>
-            Discount <span>¢0</span>{" "}
+            Discount <span>¢0.00</span>{" "}
           </p>
           <p className={classes.bagInfo}>
-            Delivery <span>¢{delivery}</span>{" "}
+            Delivery <span>¢{formData.delivery}</span>{" "}
           </p>
 
           <p className={classes.bagInfo}>
-            Total <span>¢{total}</span>
+            Total <span>¢{total.toFixed(2)}</span>
           </p>
 
           <div className={classes.bagSummary}>

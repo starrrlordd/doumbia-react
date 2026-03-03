@@ -10,15 +10,20 @@ import Input from "../../components/UI/Input";
 
 const ContactDetails = () => {
   const user = auth.currentUser;
-  
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredSurname, setEnteredSurname] = useState("");
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [enteredPhone, setEnteredPhone] = useState("");
-  const [selectedGender, setSelectedGender] = useState("");
-  const [enteredBirthdate, setEnteredBirthdate] = useState("");
+
+  const [formData, setFormData] = useState({
+    firstname: "",
+    surname: "",
+    email: "",
+    phone: "",
+    gender: "",
+    birthdate: "",
+  });
 
   const [hasFetchedData, setHasFetchedData] = useState(false);
+
+  const [status, setStatus] = useState("idle");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchContactDetails = async () => {
@@ -37,13 +42,14 @@ const ContactDetails = () => {
         if (contactSnapshot.exists()) {
           const contactData = contactSnapshot.data();
 
-          setEnteredName(contactData.name || "");
-          setEnteredSurname(contactData.surname || "");
-          setEnteredEmail(contactData.email || "");
-          setEnteredPhone(contactData.phone || "");
-          setSelectedGender(contactData.gender || "");
-          setEnteredBirthdate(contactData.birthdate || "");
-
+          setFormData({
+            firstname: contactData.name || "",
+            surname: contactData.surname || "",
+            email: contactData.email || "",
+            phone: contactData.phone || "",
+            gender: contactData.gender || "",
+            birthdate: contactData.birthdate || "",
+          });
           setHasFetchedData(true);
         }
       } catch (error) {
@@ -54,40 +60,25 @@ const ContactDetails = () => {
     fetchContactDetails();
   }, [user]);
 
-  const nameChangerHandler = (event) => {
-    setEnteredName(event.target.value);
-  };
+  const inputChangeHandler = (event) => {
+    const { name, value } = event.target;
 
-  const surnameChangeHandler = (event) => {
-    setEnteredSurname(event.target.value);
-  };
-
-  const emailChangeHandler = (event) => {
-    setEnteredEmail(event.target.value);
-  };
-
-  const phoneChangeHandler = (event) => {
-    setEnteredPhone(event.target.value);
-  };
-
-  const genderChangeHandler = (event) => {
-    setSelectedGender(event.target.value);
-  };
-
-  const birthdateChangeHandler = (event) => {
-    setEnteredBirthdate(event.target.value);
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const contactDetailsSubmitHandler = async (event) => {
     event.preventDefault();
 
     const contactDetails = {
-      name: enteredName,
-      surname: enteredSurname,
-      email: enteredEmail,
-      phone: enteredPhone,
-      gender: selectedGender,
-      birthdate: enteredBirthdate,
+      name: formData.firstname,
+      surname: formData.surname,
+      email: formData.email,
+      phone: formData.phone,
+      gender: formData.gender,
+      birthdate: formData.birthdate,
     };
 
     try {
@@ -100,6 +91,8 @@ const ContactDetails = () => {
       );
 
       await setDoc(contactRef, contactDetails);
+      setStatus("success");
+      setIsModalVisible(true);
     } catch (error) {
       console.error("couldnt save contact details: ", error);
     }
@@ -109,46 +102,44 @@ const ContactDetails = () => {
     <div className={classes.contactDetails}>
       <h2 className={classes.contactDetailsFont}>Contact Details</h2>
 
-      {hasFetchedData && (
+      {hasFetchedData ? (
         <div className={classes.contactCard}>
           <div className={classes.dataFullName}>
             <div>
               <h2 className={classes.dataGroup}>First name</h2>
-              <p>{enteredName}</p>
+              <p>{formData.firstname}</p>
             </div>
             <div>
               <h2 className={classes.dataGroup}>Last name</h2>
-              <p>{enteredSurname}</p>
+              <p>{formData.surname}</p>
             </div>
           </div>
 
           <div className={classes.dataEmail}>
             <div className={classes.dataGroup}>
               <h2>Email</h2>
-              <p>{enteredEmail}</p>
+              <p>{formData.email}</p>
             </div>
           </div>
           <div className={classes.dataEmail}>
             <div className={classes.dataGroup}>
               <h2>Phone</h2>
-              <p>{enteredPhone}</p>
+              <p>{formData.phone}</p>
             </div>
           </div>
 
           <div className={classes.dataFullName}>
             <div>
               <h2 className={classes.dataGroup}>Gender</h2>
-              <p>{selectedGender}</p>
+              <p>{formData.gender}</p>
             </div>
             <div>
               <h2 className={classes.dataGroup}>Birthdate</h2>
-              <p>{enteredBirthdate}</p>
+              <p>{formData.birthdate}</p>
             </div>
           </div>
         </div>
-      )}
-
-      {!hasFetchedData && (
+      ) : (
         <form
           onSubmit={contactDetailsSubmitHandler}
           className={classes.contactCard}
@@ -156,16 +147,18 @@ const ContactDetails = () => {
           <div>
             <div className={classes.fullName}>
               <Input
+                name="firstname"
                 placeholder="First Name"
-                onChange={nameChangerHandler}
-                value={enteredName}
+                onChange={inputChangeHandler}
+                value={formData.name}
                 autocomplete="given-name"
                 required
               />
               <Input
+                name="surname"
                 placeholder="Surname"
-                onChange={surnameChangeHandler}
-                value={enteredSurname}
+                onChange={inputChangeHandler}
+                value={formData.surname}
                 autocomplete="family-name"
                 required
               />
@@ -173,9 +166,10 @@ const ContactDetails = () => {
 
             <div className={classes.group}>
               <Input
+                name="email"
                 placeholder="E-mail"
-                onChange={emailChangeHandler}
-                value={enteredEmail}
+                onChange={inputChangeHandler}
+                value={formData.email}
                 type="email"
                 autocomplete="email"
                 required
@@ -183,10 +177,11 @@ const ContactDetails = () => {
             </div>
             <div className={classes.group}>
               <Input
+                name="phone"
                 placeholder="Phone"
                 type="tel"
-                onChange={phoneChangeHandler}
-                value={enteredPhone}
+                onChange={inputChangeHandler}
+                value={formData.phone}
                 autocomplete="tel"
                 required
               />
@@ -195,12 +190,12 @@ const ContactDetails = () => {
               <label>Gender: </label>
               <div className={classes.group3}>
                 <input
+                  name="gender"
                   type="radio"
                   id="male"
-                  name="gender"
                   value="male"
-                  checked={selectedGender === "male"}
-                  onChange={genderChangeHandler}
+                  checked={formData.gender === "male"}
+                  onChange={inputChangeHandler}
                 />
                 <label htmlFor="male"> Male</label>
               </div>
@@ -210,8 +205,8 @@ const ContactDetails = () => {
                   id="female"
                   name="gender"
                   value="female"
-                  checked={selectedGender === "female"}
-                  onChange={genderChangeHandler}
+                  checked={formData.gender === "female"}
+                  onChange={inputChangeHandler}
                 />
                 <label htmlFor="female">Female</label>
               </div>
@@ -224,8 +219,8 @@ const ContactDetails = () => {
                 id="birthDate"
                 name="birthDate"
                 max={new Date().toISOString().split("T")[0]}
-                onChange={birthdateChangeHandler}
-                value={enteredBirthdate}
+                onChange={inputChangeHandler}
+                value={formData.birthdate}
                 required
                 className={classes.birthdayInput}
               />
