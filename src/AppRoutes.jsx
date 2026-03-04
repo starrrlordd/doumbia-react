@@ -22,15 +22,20 @@ import ContactDetails from "./pages/Account/ContactDetails";
 import Orders from "./pages/Account/Orders";
 import Footer from "./components/layout/Footer";
 import AdminRoute from "./pages/Auth/AdminRoute"; 
+import { LoadingContext } from "./store/loading-context";
+import LoadingModal from "./components/UI/LoadingModal";
 
 const AppRoutes = () => {
   const { isMobileSize } = useContext(WindowSizeContext);
 
+  const { isLoading } = useContext(LoadingContext);
+
   return (
     <>
       <ScrollToTop />
+      
       <Header />
-
+      {isLoading && <LoadingModal />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />

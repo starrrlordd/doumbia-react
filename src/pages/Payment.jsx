@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../store/cart-context";
 
-import { usePaystackPayment } from "react-paystack";
-
 import { auth, db } from "../firebase";
 import { collection, doc, getDoc, addDoc, Timestamp } from "firebase/firestore";
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 import Card from "../components/UI/Card";
 import WhiteButton from "../components/UI/WhiteButton";
@@ -28,55 +27,18 @@ const PAYMENT_METHODS = {
 };
 
 const Payment = () => {
-  const [payment, setPayment] = useState("paystack");
   const { cart, clearCart } = useContext(CartContext);
+  const [payment, setPayment] = useState("");
   const navigate = useNavigate();
   const user = auth.currentUser;
 
-  const totalCartAmount = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
+  const functions = getFunctions();
+  const createCashOrder = httpsCallable(functions, "createCashOrder");
+  const initializePayment = httpsCallable(functions, "initializePayment");
+  const verifyPayment = httpsCallable(functions, "verifyPayment");
 
   const choosePaymentHandler = (event) => {
     setPayment(event.target.value);
-  };
-
-  const saveOrderToFirebase = async (paymentStatus, reference = "CASH") => {
-    try {
-      if (!user) throw new Error("User not authenticated");
-
-      const deliveryRef = doc(db, "users", user.uid, "userDelivery", "details");
-      const deliverySnapshot = await getDoc(deliveryRef);
-
-      if (!deliverySnapshot.exists()) {
-        throw new Error("Delivery details not found");
-      }
-
-      const deliveryDetails = deliverySnapshot.data();
-      const deliveryFee = parseFloat(deliveryDetails.delivery);
-      const totalAmount = totalCartAmount + deliveryFee;
-
-      const orderData = {
-        items: cart,
-        delivery: { ...deliveryDetails, fees: deliveryFee },
-        totalAmount,
-        paymentMethod: payment,
-        paymentStatus: paymentStatus,
-        orderStatus: "pending",
-        reference: reference,
-        createdAt: Timestamp.now(),
-      };
-
-      const ordersRef = collection(db, "users", user.uid, "orders");
-      const orderDoc = await addDoc(ordersRef, orderData);
-
-      clearCart();
-      navigate(`/order-confirmation/${orderDoc.id}`);
-    } catch (error) {
-      console.error("Order failed: ", error);
-      alert("Something went wrong saving your order");
-    }
   };
 
   const confirmOrderHandler = async () => {
@@ -92,45 +54,48 @@ const Payment = () => {
 
     if (payment === PAYMENT_METHODS.PAYSTACK) {
       try {
-        const deliveryRef = doc(
-          db,
-          "users",
-          user.uid,
-          "userDelivery",
-          "details",
-        );
-        const deliverySnapshot = await getDoc(deliveryRef);
+        const response = await initializePayment();
 
-        if (!deliverySnapshot.exists()) {
-          throw new Error("Delivery details not found");
-        }
-
-        const deliveryFee = parseFloat(deliverySnapshot.data().delivery);
-        const finalTotal = (totalCartAmount + deliveryFee) * 100;
-
-        const config = {
-          reference: new Date().getTime().toString(),
-          email: user.email,
-          amount: finalTotal,
-          publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
-          currency: "GHS",
-        };
-
-        const initializePayment = usePaystackPayment(config);
-
-        initializePayment(
-          (reference) => saveOrderToFirebase("paid", reference.reference),
-          () => console.log("Payment closed"),
-        );
-        saveOrderToFirebase("success");
+        window.location.href = response.data.data.authorization_url;
       } catch (error) {
-        console.error("Payment initialization failed: ", error.message);
-        alert("Failed to initialize payment. Please try again");
+        console.error("Payment initialization failed: ", error);
+        alert("Failed to initialize payment.");
       }
     } else {
-      saveOrderToFirebase("pending");
+      try {
+        const result = await createCashOrder();
+
+        if (result.data.success) {
+          navigate(`/order-confirmation/${result.data.orderId}`)
+        }
+      } catch (error) {
+        console.error("Cash order failed: ", error);
+        alert("Failed to place order");
+      }
     }
   };
+
+  useEffect(() => {
+    const verify = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const reference = params.get("reference");
+
+      if (!reference) return;
+
+      try {
+        const result = await verifyPayment({ reference });
+
+        if (result.data.success) {
+          navigate(`/order-confirmation/${result.data.orderId}`);
+        }
+      } catch (error) {
+        console.error("Verification failed: ", error);
+        alert("Payment verification failed");
+      }
+    };
+    
+    verify();
+  }, []);
 
   return (
     <div className={classes.payment}>

@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { auth } from "../firebase";
-import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
+import {  sendEmailVerification } from "firebase/auth";
 import { useLocation } from "react-router-dom";
 import { CartContext } from "../store/cart-context";
 
@@ -21,16 +21,16 @@ import CartSlider from "../components/UI/CartSlider";
 
 import classes from "./Shop.module.css";
 import BlackButton from "../components/UI/BlackButton";
+import { LoadingContext } from "../store/loading-context";
 
 const Shop = () => {
   const PRODUCTS_PER_PAGE = 8;
   const [lastDoc, setLastDoc] = useState(null);
   const [hasMore, setHasMore] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const {isLoading, showLoading, hideLoading} = useContext(LoadingContext)
 
   const [products, setProducts] = useState([]);
-
-  const [isVerifiedUser, setIsVerifiedUser] = useState(false);
 
   const filterBarItems = [
     "Inventory",
@@ -88,7 +88,7 @@ const Shop = () => {
   const db = getFirestore();
 
   const fetchProducts = async (reset = false) => {
-    setIsLoading(true);
+    showLoading();
 
     let q;
 
@@ -135,7 +135,7 @@ const Shop = () => {
 
     setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
     setHasMore(snapshot.docs.length === PRODUCTS_PER_PAGE);
-    setIsLoading(false);
+    hideLoading();
   };
 
   useEffect(() => {
@@ -144,18 +144,6 @@ const Shop = () => {
     setHasMore(true);
     fetchProducts(true);
   }, [selectedCategory]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsVerifiedUser(user.emailVerified);
-      } else {
-        setIsVerifiedUser(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const verifyEmailHandler = async () => {
     if (!user) return;
