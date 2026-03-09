@@ -21,9 +21,10 @@ import AccountOverview from "./pages/Account/AccountOverview";
 import ContactDetails from "./pages/Account/ContactDetails";
 import Orders from "./pages/Account/Orders";
 import Footer from "./components/layout/Footer";
-import AdminRoute from "./pages/Auth/AdminRoute"; 
+import AdminRoute from "./pages/Auth/AdminRoute";
 import { LoadingContext } from "./store/loading-context";
 import LoadingModal from "./components/UI/LoadingModal";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 const AppRoutes = () => {
   const { isMobileSize } = useContext(WindowSizeContext);
@@ -33,7 +34,7 @@ const AppRoutes = () => {
   return (
     <>
       <ScrollToTop />
-      
+
       <Header />
       {isLoading && <LoadingModal />}
       <Routes>
@@ -54,6 +55,7 @@ const AppRoutes = () => {
 
         <Route element={<AdminRoute />}>
           <Route path="/admin/add-product" element={<AdminAddProduct />} />
+          <Route path="/admin/admin-dashboard" element={<AdminDashboard />} />
         </Route>
 
         <Route

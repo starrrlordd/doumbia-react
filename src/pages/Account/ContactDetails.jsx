@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react"; 
 
 import { auth } from "../../firebase";
 import { db } from "../../firebase";
@@ -7,6 +7,7 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import classes from "./ContactDetails.module.css";
 import BlackButton from "../../components/UI/BlackButton";
 import Input from "../../components/UI/Input";
+import { LoadingContext } from "../../store/loading-context";
 
 const ContactDetails = () => {
   const user = auth.currentUser;
@@ -21,13 +22,14 @@ const ContactDetails = () => {
   });
 
   const [hasFetchedData, setHasFetchedData] = useState(false);
-
-  const [status, setStatus] = useState("idle");
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  
+  const { showLoading, hideLoading } = useContext(LoadingContext);
 
   useEffect(() => {
     const fetchContactDetails = async () => {
       if (!user) return;
+
+      showLoading();
 
       try {
         const contactRef = doc(
@@ -54,6 +56,8 @@ const ContactDetails = () => {
         }
       } catch (error) {
         console.error("Failed to fetch contact details: ", error);
+      } finally {
+        hideLoading();
       }
     };
 
@@ -81,6 +85,8 @@ const ContactDetails = () => {
       birthdate: formData.birthdate,
     };
 
+    showLoading();
+
     try {
       const contactRef = doc(
         db,
@@ -91,10 +97,10 @@ const ContactDetails = () => {
       );
 
       await setDoc(contactRef, contactDetails);
-      setStatus("success");
-      setIsModalVisible(true);
     } catch (error) {
       console.error("couldnt save contact details: ", error);
+    } finally {
+      hideLoading();
     }
   };
 

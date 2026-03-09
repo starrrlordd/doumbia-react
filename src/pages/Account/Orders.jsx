@@ -8,15 +8,22 @@ import classes from "./Orders.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { LoadingContext } from "../../store/loading-context";
 
 const Orders = () => {
   const [loadedOrders, setLoadedOrders] = useState([]);
   const [expandedOrder, setExpandedOrder] = useState(null);
   const user = auth.currentUser;
 
+  const { showLoading, hideLoading } = useContext(LoadingContext);
+
   useEffect(() => {
     const fetchOrders = async () => {
+      if (!user) return;
+
+      showLoading();
+
       try {
         const ordersRef = collection(db, "users", user.uid, "orders");
         const querySnapshot = await getDocs(ordersRef);
@@ -30,6 +37,8 @@ const Orders = () => {
         setLoadedOrders(loadedOrders);
       } catch (error) {
         console.error("Failed to load orders: ", error);
+      } finally {
+        hideLoading();
       }
     };
 
@@ -75,8 +84,8 @@ const Orders = () => {
               <div className={classes.borderLine}></div>
               <div className={classes.orderItemDetails}>
                 {orderItem.items.map((item) => (
-                  <div className={classes.orderDetailsGroup}>
-                    <div className={classes.orderDetailsGroup1} key={item.id}>
+                  <div className={classes.orderDetailsGroup} key={item.id}>
+                    <div className={classes.orderDetailsGroup1} >
                       <p>{item.name}</p>
                       <p>x {item.quantity}</p>
                     </div>
@@ -89,7 +98,7 @@ const Orders = () => {
         </div>
       ))}
 
-      {loadedOrders.length > 0 && (
+      {/* {loadedOrders.length > 0 && (
         <div className={classes.orderNavigationWrapper}>
           <div className={classes.orderNavigation}>
             <FontAwesomeIcon icon={faArrowLeft} />
@@ -100,7 +109,7 @@ const Orders = () => {
             <FontAwesomeIcon icon={faArrowRight} />
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
