@@ -1,0 +1,12 @@
+.adminWrapper {
+    padding: 30px;
+}
+
+.adminLayout {
+    display: flex;
+    justify-content: space-between;
+}
+
+.adminContent {
+    width: 1050px;
+}

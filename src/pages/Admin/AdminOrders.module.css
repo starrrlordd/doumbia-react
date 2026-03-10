@@ -9,6 +9,11 @@
     gap: 2rem;
 }
 
+.adminCard {
+  max-width: 1050px;
+  padding: 20px;
+}
+
 
 
 @media (min-width: 0) and (max-width: 480px) {

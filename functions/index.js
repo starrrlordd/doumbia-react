@@ -136,16 +136,26 @@ exports.verifyPayment = functions
 
     const cartSnapshot = await cartRef.get();
 
-    let backenedTotal = 0;
+    let backendTotal = 0;
     const cartItems = [];
 
     cartSnapshot.forEach((doc) => {
       const item = doc.data();
-      backenedTotal += item.price * item.quantity;
+      backendTotal += item.price * item.quantity;
       cartItems.push(item);
     });
 
-    const expectedAmount = backenedTotal * 100;
+    const expectedAmount = backendTotal * 100;
+
+    const deliveryRef = admin
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .collection("userDelivery")
+      .doc("details");
+
+    const deliverySnapshot = await deliveryRef.get();
+    const deliveryDetails = deliverySnapshot.data();
 
     if (paymentData.amount !== expectedAmount) {
       throw new functions.https.HttpsError(
@@ -161,18 +171,32 @@ exports.verifyPayment = functions
       .collection("orders")
       .add({
         items: cartItems,
-        totalAmount: backenedTotal,
+        totalAmount: backendTotal,
         paymentStatus: "paid",
         orderStatus: "pending",
+        delivery: deliveryDetails,
         reference,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
+
+    const adminOrderRef = await admin.firestore().collection("orders").add({
+      userId,
+      items: cartItems,
+      totalAmount: backendTotal,
+      paymentMethod: "paystack",
+      paymentStatus: "paid",
+      orderStatus: "pending",
+      reference,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    const orderId = db.collection("orders").doc().id;
 
     const batch = admin.firestore().batch();
     cartSnapshot.forEach((doc) => batch.delete(doc.ref));
     await batch.commit();
 
-    return { success: true, orderId: orderRef.id };
+    return { success: true, orderId: orderId, adminOrderId: orderId };
   });
 
 exports.createCashOrder = functions.https.onCall(async (data, context) => {
@@ -184,7 +208,6 @@ exports.createCashOrder = functions.https.onCall(async (data, context) => {
   }
 
   const userId = context.auth.uid;
-
   const db = admin.firestore();
 
   const cartRef = db.collection("users").doc(userId).collection("cart");
@@ -226,20 +249,28 @@ exports.createCashOrder = functions.https.onCall(async (data, context) => {
 
   const finalTotal = totalAmount + deliveryFee;
 
-  const orderRef = await db
+  const orderId = db.collection("orders").doc().id;
+
+  const orderData = {
+    userId,
+    items: cartItems,
+    delivery: { ...deliveryDetails, fee: deliveryFee },
+    totalAmount: finalTotal,
+    paymentMethod: "cash",
+    paymentStatus: "pending",
+    orderStatus: "pending",
+    reference: "CASH",
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  };
+
+  await db
     .collection("users")
     .doc(userId)
     .collection("orders")
-    .add({
-      items: cartItems,
-      delivery: { ...deliveryDetails, fees: deliveryFee },
-      totalAmount: finalTotal,
-      paymentMethod: "cash",
-      paymentStatus: "pending",
-      orderStatus: "pending",
-      reference: "CASH",
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    .doc(orderId)
+    .set(orderData);
+
+  await db.collection("orders").doc(orderId).set(orderData);
 
   const batch = db.batch();
   cartSnapshot.forEach((doc) => batch.delete(doc.ref));
@@ -247,6 +278,6 @@ exports.createCashOrder = functions.https.onCall(async (data, context) => {
 
   return {
     success: true,
-    orderId: orderRef.id,
+    orderId,
   };
 });

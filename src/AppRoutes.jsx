@@ -25,6 +25,8 @@ import AdminRoute from "./pages/Auth/AdminRoute";
 import { LoadingContext } from "./store/loading-context";
 import LoadingModal from "./components/UI/LoadingModal";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminLayout from "./pages/Admin/AdminLayout";
+import AdminOrders from "./pages/Admin/AdminOrders";
 
 const AppRoutes = () => {
   const { isMobileSize } = useContext(WindowSizeContext);
@@ -54,8 +56,12 @@ const AppRoutes = () => {
         <Route path="/product/:id" element={<ProductInfoPage />} />
 
         <Route element={<AdminRoute />}>
-          <Route path="/admin/add-product" element={<AdminAddProduct />} />
-          <Route path="/admin/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin" element={<AdminLayout />}>
+
+            <Route index element={<AdminDashboard />} />
+            <Route path="admin-orders" element={<AdminOrders />} />
+            <Route path="add-product" element={<AdminAddProduct />} />
+          </Route>
         </Route>
 
         <Route

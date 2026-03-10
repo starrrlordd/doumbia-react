@@ -20,6 +20,7 @@ import mastercard from "../assets/images/icons/mastercard.png";
 import mtn from "../assets/images/icons/mtn.jpeg";
 import telecel from "../assets/images/icons/telecel.jpg";
 import airtelTigo from "../assets/images/icons/airtelTigo.png";
+import { LoadingContext } from "../store/loading-context";
 
 const PAYMENT_METHODS = {
   PAYSTACK: "paystack",
@@ -31,6 +32,8 @@ const Payment = () => {
   const [payment, setPayment] = useState("");
   const navigate = useNavigate();
   const user = auth.currentUser;
+  
+  const {showLoading, hideLoading} = useContext(LoadingContext);
 
   const functions = getFunctions();
   const createCashOrder = httpsCallable(functions, "createCashOrder");
@@ -53,6 +56,8 @@ const Payment = () => {
     }
 
     if (payment === PAYMENT_METHODS.PAYSTACK) {
+      showLoading();
+
       try {
         const response = await initializePayment();
 
@@ -71,6 +76,8 @@ const Payment = () => {
       } catch (error) {
         console.error("Cash order failed: ", error);
         alert("Failed to place order");
+      } finally {
+        hideLoading();
       }
     }
   };
